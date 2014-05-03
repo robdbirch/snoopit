@@ -1,9 +1,9 @@
 [
     {
-        "input" : "/Users/rbirch/Development/projects/snoopit/spec/support/snoop_log.test",
+        "input" : "/Users/rbirch/Development/projects/snoopit/spec/support/log/snoop_log.test",
         "dir": {
-            "path" : "/Users/rbirch/Development/projects/snoopit/spec/support",
-            "suffix": ".log"
+            "path" : "/Users/rbirch/Development/projects/snoopit/spec/support/log",
+            "glob": "*.test"
         },
         "sniffers" : [
             {

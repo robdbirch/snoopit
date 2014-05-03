@@ -3,7 +3,7 @@
         "input" : "/Users/snoopers/log/app_server.log",
         "dir": {
             "path" : "/Users/snoopers/log",
-            "suffix": ".log"
+            "glob": "*.log"
         },
         "sniffers" : [
             {

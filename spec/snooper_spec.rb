@@ -15,7 +15,7 @@ describe 'Snooper' do
     snoopy = snooper.snoopies[0]
     snoopy.input.should eq @jsnoopy['input']
     snoopy.dir.should eq @jsnoopy['dir']['path']
-    snoopy.suffix.should eq @jsnoopy['dir']['suffix']
+    snoopy.glob.should eq @jsnoopy['dir']['glob']
     snoopy.input_check?.should == true
   end
 
@@ -46,7 +46,7 @@ describe 'Snooper' do
 
     before(:each) do
       @jsnoopy['dir']['path'] = nil
-      @jsnoopy['dir']['suffix'] = nil
+      @jsnoopy['dir']['glob'] = nil
     end
 
     it 'loads a regexp configuration and with invalid input and dir via hash' do
@@ -125,7 +125,7 @@ describe 'Snooper' do
     end
 
 
-    it 'loads a snoopies json file and sniffs out a log file 0 before 1 after', :focus do
+    it 'loads a snoopies json file and sniffs out a log file 0 before 1 after' do
       @jsnoopy['sniffers'].each do |sniffer|
         sniffer['lines']['before'] = 0
         sniffer['lines']['after'] = 1
@@ -163,7 +163,7 @@ describe 'Snooper' do
     end
 
 
-    it 'loads a snoopies json file and sniffs out a log file 1 before 0 after', :focus do
+    it 'loads a snoopies json file and sniffs out a log file 1 before 0 after' do
       @jsnoopy['sniffers'].each do |sniffer|
         sniffer['lines']['before'] = 1
         sniffer['lines']['after'] = 0
@@ -227,6 +227,83 @@ describe 'Snooper' do
         end
       end
     end
+  end
+
+  context 'directory testing' do
+
+    before(:each) do
+      Snoopit.logger.level = ::Logger::DEBUG
+      #@jsnoopy['dir']['path'] = nil
+    end
+
+    it 'loads a snoopies json file and sniffs out a directory' do
+      @jsnoopy['dir']['glob'] = nil
+      @snooper.load_array [ @jsnoopy ]
+      @snooper.snoopies.size.should == 1
+      @snooper.snoopies[0].sniffers.size.should == 3
+      snoopies = @snooper.snoop
+      snoopies.each do |snoopy|
+        snoopy.sniffers.each do |sniffer|
+          if sniffer.regexp.source == 'Non OK Status'
+            sniffer.sniffed.size.should eq 120
+            sniffer.sniffed.each do |sniffed|
+              sniffed.before.size.should eq 2
+              sniffed.after.size.should eq 2
+            end
+          elsif sniffer.regexp.source == 'Failed to bulk load'
+            sniffer.sniffed.size.should eq 2
+            sniffer.sniffed.each do |sniffed|
+              sniffed.before.size.should eq 2
+              sniffed.after.size.should eq 2
+            end
+          elsif sniffer.regexp.source == 'Total Number of records:'
+            sniffer.sniffed.size.should eq 94
+            sniffer.sniffed.each do |sniffed|
+              sniffed.before.size.should eq 1
+              sniffed.after.size.should eq 1
+            end
+          else
+            # This should not happen
+            true.should eq false
+          end
+        end
+      end
+    end
+
+
+    it 'loads a snoopies json file and sniffs out a glob directory' do
+      @snooper.load_array [ @jsnoopy ]
+      @snooper.snoopies.size.should == 1
+      @snooper.snoopies[0].sniffers.size.should == 3
+      snoopies = @snooper.snoop
+      snoopies.each do |snoopy|
+        snoopy.sniffers.each do |sniffer|
+          if sniffer.regexp.source == 'Non OK Status'
+            sniffer.sniffed.size.should eq 120
+            sniffer.sniffed.each do |sniffed|
+              sniffed.before.size.should eq 2
+              sniffed.after.size.should eq 2
+            end
+          elsif sniffer.regexp.source == 'Failed to bulk load'
+            sniffer.sniffed.size.should eq 2
+            sniffer.sniffed.each do |sniffed|
+              sniffed.before.size.should eq 2
+              sniffed.after.size.should eq 2
+            end
+          elsif sniffer.regexp.source == 'Total Number of records:'
+            sniffer.sniffed.size.should eq 94
+            sniffer.sniffed.each do |sniffed|
+              sniffed.before.size.should eq 1
+              sniffed.after.size.should eq 1
+            end
+          else
+            # This should not happen
+            true.should eq false
+          end
+        end
+      end
+    end
+
   end
 
 end

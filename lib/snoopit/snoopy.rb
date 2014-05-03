@@ -1,7 +1,7 @@
 module Snoopit
   class Snoopy
 
-    attr :input, :output, :dir, :suffix, :sniffers
+    attr :input, :output, :dir, :glob, :sniffers
 
     def initialize(params)
       @output = params['output']
@@ -17,7 +17,7 @@ module Snoopit
 
     def setup_dir(params)
       @dir = params['dir']['path']
-      @suffix = params['dir']['suffix']
+      @glob = params['dir']['glob']
     end
 
     def input_check?
@@ -35,11 +35,11 @@ module Snoopit
     end
 
     def dir?
-      @dir.nil?
+      ! @dir.nil?
     end
 
-    def suffix?
-      @suffix.nil?
+    def glob?
+      ! @glob.nil?
     end
 
     def sniff(file, line_no, line)
