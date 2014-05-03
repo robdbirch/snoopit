@@ -56,5 +56,18 @@ module Snoopit
       tracked
     end
 
+    def as_json(options=nil)
+      {
+          input: @input,
+          dir: @dir,
+          glob: @glob,
+          sniffers: @sniffers
+      }
+    end
+
+    def to_json(*a)
+     as_json.to_json(*a)
+    end
+
   end
 end

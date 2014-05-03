@@ -49,6 +49,14 @@ module Snoopit
       @register.length
     end
 
+    def as_json(options=nil)
+       @register
+    end
+
+    def to_json(*a)
+      as_json.to_json(*a)
+    end
+
   end
 
 

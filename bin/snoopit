@@ -8,6 +8,8 @@ options[:snoopies]='snoopies.json'
 options[:verbose] = false
 options[:line_numbers] = false
 options[:new_line] = true
+options[:json] = false
+options[:pretty_json] = false
 
 OptionParser.new do |opts|
 
@@ -17,13 +19,22 @@ OptionParser.new do |opts|
     options[:snoopies] = r
   end
 
-  opts.on('-t', '--template', 'Generate and template json file to stdout' ) do
+  opts.on('-t', '--template', 'Generate and template snoopies.json file to stdout' ) do
     template = File.expand_path '../../support/snoopies.json', __FILE__
     puts template
     File.readlines(template).each do |line|
       puts line
     end
     exit
+  end
+
+  opts.on('-j', '--json', 'Generate output in json' ) do
+    options[:json]  = true
+  end
+
+  opts.on('-J', '--pretty-json', 'Generate output in pretty json' ) do
+    options[:json]  = true
+    options[:pretty_json] = true
   end
 
   opts.on('-N', '--no-newline', 'Do not output new line between found items' ) do |l|
@@ -93,17 +104,37 @@ def no_line_numbers(sniffed)
   sniffed.after.register.each {|a| puts a unless a.nil? }
 end
 
-snooper = Snoopit::Snooper.new
-snooper.load_file options[:snoopies]
-snoopies = snooper.snoop
-snoopies.each do |snoopie|
-  snoopie.sniffers.each do |sniffer|
-    sniffer.sniffed.each do |sniffed|
-      verbose sniffed if options[:verbose]
-      options[:line_numbers] ? line_numbers(sniffed) : no_line_numbers(sniffed)
-      puts '' if options[:new_line]
+def dump_lines(snoopies, newline, line_no, is_verbose)
+  snoopies.each do |snoopie|
+    snoopie.sniffers.each do |sniffer|
+      sniffer.sniffed.each do |sniffed|
+        verbose sniffed if is_verbose
+        line_no ? line_numbers(sniffed) : no_line_numbers(sniffed)
+        puts '' if newline
+      end
     end
   end
 end
+
+def dump_json(snoopies, pretty=false)
+  if pretty
+    puts JSON.pretty_generate snoopies
+  else
+    puts snoopies.to_json
+  end
+
+end
+
+snooper = Snoopit::Snooper.new
+snooper.load_file options[:snoopies]
+snoopies = snooper.snoop
+
+if options[:json]
+  dump_json snoopies, options[:pretty_json]
+else
+  dump_lines snoopies, options[:new_line], options[:line_numbers], options[:verbose]
+end
+
+
 
 

@@ -26,5 +26,19 @@ module Snoopit
       end
     end
 
+    def as_json(options=nil)
+      {
+          before: @before,
+          after: @after,
+          comment: @comment,
+          regext: @regexp.to_json,
+          sniffed: @sniffed
+      }
+    end
+
+    def to_json(*a)
+      as_json.to_json(*a)
+    end
+
   end
 end

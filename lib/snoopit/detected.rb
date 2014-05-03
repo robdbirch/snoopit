@@ -31,5 +31,19 @@ module Snoopit
       @finished
     end
 
+    def as_json(options=nil)
+      {
+          after: @after,
+          match: @match,
+          before: @before,
+          file: @file,
+          line_no: @line_no
+      }
+    end
+
+    def to_json(*a)
+      as_json.to_json(*a)
+    end
+
   end
 end
