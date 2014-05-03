@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+require 'optparse'
+require 'logger'
+
+options = {}
+options[:regexp_file]='regexp.json'
+options[:log_file]=STDOUT
+options[:log_level] = ::Logger::INFO
+
+OptionParser.new do |opts|
+
+  opts.banner = 'Usage: snooper [options]'
+
+  opts.on('-r', '--regexp regexp_file', 'File contains regexp to locate a line of interest in a log file' ) do |r|
+    options[:regexp_file] = r
+  end
+
+  opts.on('-t', '--template', 'Generate and template json file to stdout' ) do
+    template = File.expand_path '../../support/sniffers.json', __FILE__
+    puts template
+    File.readlines(template).each do |line|
+      puts line
+    end
+    exit
+  end
+
+  opts.on('-l', '--logger log_file', 'Log to this file' ) do |l|
+    options[:log_file] = l
+  end
+
+  opts.on('-L', '--level log_level', 'Logger Level info|warn|error|fatal|unknown|debug' ) do |l|
+    options[:log_level] = Snoopit::Logger.LEVEL_MAP[l]
+  end
+
+  opts.on_tail('-h', '--help') do
+    puts opts
+    exit
+  end
+
+end.parse!
+
+snooper = Snooper.new options[:log_file], options[:log_level]
+snooper.load_file options[:regexp_file]
+snooper.snoop

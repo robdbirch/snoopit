@@ -1,0 +1,23 @@
+[
+    {
+        "output" : "/Users/rbirch/Development/projects/noxaos/pipeline/log/snoop.log",
+        "input" : "/Users/rbirch/Development/projects/noxaos/pipeline/log/prediction_loader_server.log",
+        "dir": {
+            "path" : "/Users/rbirch/Development/projects/noxaos/pipeline/log",
+            "suffix": ".log"
+        },
+        "sniffers" : [
+            {
+                "comment" : "Search on bad status from lisp scores",
+                "regexp" : "Non OK Status"
+            }
+        ],
+        "lines" : {
+            "before" : 5,
+            "after" : 5
+        },
+        "notifications" : {
+            "email" : "admin@noxaos.com"
+        }
+    }
+]
