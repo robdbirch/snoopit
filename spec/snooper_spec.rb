@@ -42,32 +42,66 @@ describe 'Snooper' do
     expect { @snooper.load_array([]) }.to raise_error ArgumentError
   end
 
-  it 'loads a regexp configuration and with invalid input and dir via hash' do
-    @jsnoopy['input'] = nil
-    @jsnoopy['dir']['path'] = nil
-    @jsnoopy['dir']['suffix'] = nil
-    expect { @snooper.load_array [ @jsnoopy ] }.to raise_error ArgumentError
-  end
+  context 'file tests' do
 
-  it 'loads a snoopies json file and sniffs out a log file containing Non OK Status', :focus do
-    @jsnoopy['dir']['path'] = nil
-    @jsnoopy['dir']['suffix'] = nil
-    @snooper.load_array [ @jsnoopy ]
-    Snoopit.logger.level = ::Logger::DEBUG
-    tracked = @snooper.snoop
-    puts "Number of snoopies with found data: #{tracked.size}"
-    tracked.each do |snoopy|
-      puts "Number of snoopy sniffers with found data: #{snoopy.sniffers.size}"
-      snoopy.sniffers.each do |sniffer|
-        puts "Number of snoopy sniffers with sniffed out data: #{sniffer.sniffed.size}"
-        sniffer.sniffed.each do |sniffed|
-          puts "Matched: #{sniffed.match}"
-          puts "File: #{sniffed.file}"
-          puts "Line No: #{sniffed.line_no}"
+    before(:each) do
+      @jsnoopy['dir']['path'] = nil
+      @jsnoopy['dir']['suffix'] = nil
+    end
+
+    it 'loads a regexp configuration and with invalid input and dir via hash' do
+      @jsnoopy['input'] = nil
+      expect { @snooper.load_array [ @jsnoopy ] }.to raise_error ArgumentError
+    end
+
+    it 'loads a snoopies json file and sniffs out a log file containing Non OK Status'  do
+      @snooper.load_array [ @jsnoopy ]
+      @snooper.snoopies.size.should == 1
+      @snooper.snoopies[0].sniffers.size.should == 3
+      snoopies = @snooper.snoop
+      snoopies.each do |snoopy|
+        snoopy.sniffers.each do |sniffer|
+          if sniffer.regexp.source == 'Non OK Status'
+            sniffer.sniffed.size.should eq 60
+          elsif sniffer.regexp.source == 'Failed to bulk load'
+            sniffer.sniffed.size.should eq 1
+          elsif sniffer.regexp.source == 'Total Number of records:'
+            sniffer.sniffed.size.should eq 47
+          else
+            # This should not happen
+            true.should eq false
+          end
         end
       end
     end
 
+    it 'Dump trace'  do
+      dump_it
+    end
+
+    def dump_it
+      @snooper.load_array [ @jsnoopy ]
+      Snoopit.logger.level = ::Logger::DEBUG
+      tracked = @snooper.snoop
+      puts "Number of snoopies with found data: #{tracked.size}"
+      tracked.each do |snoopy|
+        puts "Number of snoopy sniffers with found data: #{snoopy.sniffers.size}"
+        snoopy.sniffers.each do |sniffer|
+          puts "Number of snoopy sniffers with sniffed out data: #{sniffer.sniffed.size}"
+          sniffer.sniffed.each do |sniffed|
+            puts ''
+            sniffed.before.register.each {|b| puts "Before: #{b}" unless b.nil? }
+            puts "Matched: #{sniffed.match}"
+            sniffed.after.register.each {|a| puts "After: #{a}" unless a.nil? }
+            puts "Before register size: #{sniffed.before.register.size}"
+            puts "After register size: #{sniffed.after.register.size}"
+            puts "File: #{sniffed.file}"
+            puts "Line No: #{sniffed.line_no}"
+            puts ''
+          end
+        end
+      end
+    end
   end
 
 end

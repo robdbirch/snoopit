@@ -18,8 +18,9 @@ module Snoopit
     end
 
     def track(line)
+      return if line == @match
       if @after_count < @after.size
-        after.push_front line
+        @after.push_front line
         @after_count += 1
       else
         @finished = true

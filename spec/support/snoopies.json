@@ -1,18 +1,43 @@
 [
     {
-        "output" : "/Users/rbirch/Development/projects/snoopit/log/snoop.log",
-        "input" : "/Users/rbirch/Development/projects/snoopit/spec/support/prediction_loader_server.log",
+        "input" : "/Users/rbirch/Development/projects/snoopit/spec/support/snoop_log.test",
         "dir": {
             "path" : "/Users/rbirch/Development/projects/snoopit/spec/support",
             "suffix": ".log"
         },
         "sniffers" : [
             {
-                "comment" : "Search on bad status from lisp scores",
+                "comment" : "Bad status from lisp server",
                 "regexp" : "Non OK Status",
                 "lines" : {
-                    "before" : 5,
-                    "after" : 5
+                    "before" : 2,
+                    "after" : 2
+                },
+                "notify_by" : {
+                    "email" : {
+                        "to" : "admin@noxaos.com"
+                    }
+                }
+            },
+            {
+                "comment" : "Failed Bulk load, typically one or more bad records. Need to use manual loader",
+                "regexp" : "Failed to bulk load",
+                "lines" : {
+                    "before" : 2,
+                    "after" : 2
+                },
+                "notify_by" : {
+                    "email" : {
+                        "to" : "admin@noxaos.com"
+                    }
+                }
+            },
+            {
+                "comment" : "Data gathered to generate a statistics report",
+                "regexp" : "Total Number of records:",
+                "lines" : {
+                    "before" : 1,
+                    "after" : 1
                 },
                 "notify_by" : {
                     "email" : {

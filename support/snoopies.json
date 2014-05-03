@@ -1,23 +1,50 @@
 [
     {
-        "output" : "/Users/rbirch/Development/projects/noxaos/pipeline/log/snoop.log",
-        "input" : "/Users/rbirch/Development/projects/noxaos/pipeline/log/prediction_loader_server.log",
+        "input" : "/Users/snoopers/log/app_server.log",
         "dir": {
-            "path" : "/Users/rbirch/Development/projects/noxaos/pipeline/log",
+            "path" : "/Users/snoopers/log",
             "suffix": ".log"
         },
         "sniffers" : [
             {
-                "comment" : "Search on bad status from lisp scores",
-                "regexp" : "Non OK Status"
+                "comment" : "Bad status from app server",
+                "regexp" : "Non OK Status",
+                "lines" : {
+                    "before" : 2,
+                    "after" : 2
+                },
+                "notify_by" : {
+                    "email" : {
+                        "to" : "admin@noxaos.com"
+                    }
+                }
+            },
+            {
+                "comment" : "Failed Bulk load failure!",
+                "regexp" : "Failed to bulk load",
+                "lines" : {
+                    "before" : 2,
+                    "after" : 2
+                },
+                "notify_by" : {
+                    "email" : {
+                        "to" : "admin@noxaos.com"
+                    }
+                }
+            },
+            {
+                "comment" : "Data gathered to generate a statistics report",
+                "regexp" : "Total Number of records:",
+                "lines" : {
+                    "before" : 1,
+                    "after" : 1
+                },
+                "notify_by" : {
+                    "email" : {
+                        "to" : "admin@noxaos.com"
+                    }
+                }
             }
-        ],
-        "lines" : {
-            "before" : 5,
-            "after" : 5
-        },
-        "notifications" : {
-            "email" : "admin@noxaos.com"
-        }
+        ]
     }
 ]
