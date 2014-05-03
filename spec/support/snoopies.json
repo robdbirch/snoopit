@@ -1,9 +1,9 @@
 [
     {
-        "output" : "/Users/rbirch/Development/projects/noxaos/pipeline/log/snoop.log",
-        "input" : "/Users/rbirch/Development/projects/noxaos/pipeline/log/prediction_loader_server.log",
+        "output" : "/Users/rbirch/Development/projects/snoopit/log/snoop.log",
+        "input" : "/Users/rbirch/Development/projects/snoopit/spec/support/prediction_loader_server.log",
         "dir": {
-            "path" : "/Users/rbirch/Development/projects/noxaos/pipeline/log",
+            "path" : "/Users/rbirch/Development/projects/snoopit/spec/support",
             "suffix": ".log"
         },
         "sniffers" : [

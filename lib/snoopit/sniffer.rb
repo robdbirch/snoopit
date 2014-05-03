@@ -1,7 +1,7 @@
 module Snoopit
   class Sniffer
 
-    attr :pre_before, :before, :after, :comment, :regexp, :sniffing, :sniffed
+    attr :pre_before, :before, :after, :comment, :regexp, :sniffed
 
     def initialize(sniffer_params)
       @before  = sniffer_params['lines']['before'].nil? ? 5 : sniffer_params['lines']['before']
@@ -9,33 +9,20 @@ module Snoopit
       @after   = sniffer_params['lines']['after'].nil? ? 5 : sniffer_params['lines']['after']
       @comment = sniffer_params['comment']
       @regexp  = Regexp.new sniffer_params['regexp']
-      @sniffing = []
       @sniffed = []
     end
 
-    def track(line)
+    def track(file, line_no, line)
       @pre_before.push_front line
       @regexp.match(line) do |m|
-        @sniffing << Detected.new(@pre_before, @after, m)
+        @sniffed << Detected.new(@pre_before, @after, m, file, line_no)
       end
       tracking line
     end
 
     def tracking(line)
-      remove = []
-      @sniffing.each do |detected|
+      @sniffed.each do |detected|
         detected.track line
-        if detected.finished?
-          @sniffed << detected
-          remove << detected
-        end
-      end
-      adjust_tracking remove
-    end
-
-    def adjust_tracking(remove)
-      remove.each do |r|
-        @sniffing.delete r
       end
     end
 

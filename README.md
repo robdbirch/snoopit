@@ -1,6 +1,6 @@
 # Snoopit
 
-Simple tool for monitoring process log files for specified events  and then generating  a basic notification.
+Simple tool for monitoring process log files for specified events and then generating  a basic notification.
 
 ## Installation
 

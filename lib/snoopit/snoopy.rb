@@ -27,8 +27,8 @@ module Snoopit
     end
 
     def setup_sniffers(params)
-      @sniffers = []
       raise ArgumentError.new('Snooper JSON missing sniffers array') if params['sniffers'].nil?
+      @sniffers = []
       params['sniffers'].each do |sniffer|
         @sniffers << Sniffer.new(sniffer)
       end
@@ -42,11 +42,18 @@ module Snoopit
       @suffix.nil?
     end
 
-    def sniff(line)
+    def sniff(file, line_no, line)
       @sniffers.each do |sniffer|
-        sniffer.track line
+        sniffer.track file, line_no, line
       end
+    end
 
+    def get_tracked
+      tracked = []
+      @sniffers.each do |sniffer|
+        tracked <<  { snoopy: self } if sniffer.sniffed.size > 0
+      end
+      tracked
     end
 
   end

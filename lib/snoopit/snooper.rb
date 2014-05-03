@@ -35,12 +35,15 @@ module Snoopit
     # Use the snoopies and start snooping
     def snoop
       @snoopies.each do |snoopy|
-        if snoopy.dir?
+        if (!snoopy.dir?) && (snoopy.dir?)
+          Snoopit.logger.debug "Snooping directory: #{snoopy.dir}"
           dir_processing snoopy
         else
+          Snoopit.logger.debug "Snooping file: #{snoopy.input}"
           file_processing snoopy
         end
       end
+      get_tracked
     end
 
     def dir_processing(snoopy)
@@ -49,9 +52,18 @@ module Snoopit
 
     def file_processing(snoopy)
       raise ArgumentError.new "Could find file #{snoopy.input}" unless File.exist? snoopy.input
-      File.open snoopy.input do |f|
-        line = f.readline
-        snoopy.sniff line
+      Snoopit.logger.debug "Processing snoopy: #{snoopy.inspect}"
+      line_no = 1
+      File.foreach snoopy.input do |line|
+        snoopy.sniff snoopy.input, line_no, line
+        line_no += 1
+      end
+    end
+
+    def get_tracked
+      tracked = []
+      @snoopies.each do |snoopy|
+        tracked << snoopy.get_tracked
       end
     end
 
