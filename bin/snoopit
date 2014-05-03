@@ -1,18 +1,20 @@
 #!/usr/bin/env ruby
 require 'optparse'
 require 'logger'
+require 'snoopit'
 
 options = {}
-options[:regexp_file]='snoopies.json'
-options[:log_file]=STDOUT
-options[:log_level] = ::Logger::INFO
+options[:snoopies]='snoopies.json'
+options[:verbose] = false
+options[:line_numbers] = false
+options[:new_line] = true
 
 OptionParser.new do |opts|
 
   opts.banner = 'Usage: snooper [options]'
 
-  opts.on('-s', '--snoopers snoopies.json', 'File contains regexp to locate a line of interest in a log file' ) do |r|
-    options[:regexp_file] = r
+  opts.on('-s', '--snoopers snoopies.json', 'File contains one or more regular expressions to locate a line of interest in a file' ) do |r|
+    options[:snoopies] = r
   end
 
   opts.on('-t', '--template', 'Generate and template json file to stdout' ) do
@@ -24,12 +26,16 @@ OptionParser.new do |opts|
     exit
   end
 
-  opts.on('-l', '--logger log_file', 'Log to this file' ) do |l|
-    options[:log_file] = l
+  opts.on('-N', '--no-newline', 'Do not output new line between found items' ) do |l|
+    options[:new_line] = false
   end
 
-  opts.on('-L', '--level log_level', 'Logger Level info|warn|error|fatal|unknown|debug' ) do |l|
-    options[:log_level] = Snoopit::Logger.LEVEL_MAP[l]
+  opts.on('-l', '--line-numbers', 'show line numbers' ) do |l|
+    options[:line_numbers] = true
+  end
+
+  opts.on_tail('-v', '--verbose', 'prints out file name, matched line number') do
+    options[:verbose] = true
   end
 
   opts.on_tail('-h', '--help') do
@@ -39,6 +45,65 @@ OptionParser.new do |opts|
 
 end.parse!
 
-snooper = Snooper.new options[:log_file], options[:log_level]
-snooper.load_file options[:regexp_file]
-snooper.snoop
+def verbose(sniffed)
+  puts ''
+  puts "File: #{sniffed.file}"
+  puts "Match at line number: #{sniffed.line_no}"
+  puts "** Sniffed Out ** #{sniffed.match}"
+  puts ''
+end
+
+def get_start_line_number(sniffed)
+  start = sniffed.line_no - sniffed.after.size
+  start = 1 if start <= 0
+  start
+end
+
+def line_before(line_no, sniffed)
+  sniffed.before.register.each do |b|
+    unless b.nil?
+      puts "#{line_no}: #{b}"
+      line_no += 1
+    end
+  end
+  line_no
+end
+
+def line_after(line_no, sniffed)
+  sniffed.after.register.each do |a|
+    unless a.nil?
+      puts "#{line_no}: #{a}"
+      line_no += 1
+    end
+  end
+  line_no
+end
+
+def line_numbers(sniffed)
+  line_no = get_start_line_number sniffed
+  line_no = line_before line_no, sniffed
+  puts "#{line_no}: #{sniffed.match}"
+  line_no += 1
+  line_after line_no, sniffed
+end
+
+def no_line_numbers(sniffed)
+  sniffed.before.register.each {|b| puts b unless b.nil? }
+  puts sniffed.match
+  sniffed.after.register.each {|a| puts a unless a.nil? }
+end
+
+snooper = Snoopit::Snooper.new
+snooper.load_file options[:snoopies]
+snoopies = snooper.snoop
+snoopies.each do |snoopie|
+  snoopie.sniffers.each do |sniffer|
+    sniffer.sniffed.each do |sniffed|
+      verbose sniffed if options[:verbose]
+      options[:line_numbers] ? line_numbers(sniffed) : no_line_numbers(sniffed)
+      puts '' if options[:new_line]
+    end
+  end
+end
+
+
