@@ -1,6 +1,6 @@
 [
     {
-        "input" : "/Users/snoopers/log/app_server.log",
+        "snoop" : "/Users/snoopers/log/app_server.log",
         "dir": {
             "path" : "/Users/snoopers/log",
             "glob": "*.log"

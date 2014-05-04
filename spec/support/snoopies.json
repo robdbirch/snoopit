@@ -1,6 +1,6 @@
 [
     {
-        "input" : "/Users/rbirch/Development/projects/snoopit/spec/support/log/snoop_log.test",
+        "snoop" : "/Users/rbirch/Development/projects/snoopit/spec/support/log/snoop_log.test",
         "dir": {
             "path" : "/Users/rbirch/Development/projects/snoopit/spec/support/log",
             "glob": "*.test"

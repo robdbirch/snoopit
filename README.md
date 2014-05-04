@@ -31,22 +31,47 @@ Typical use is via the command line with a JSON specification file.
 
 
 ## Snooper Configuration
-This is a JSON file which describes to the `Snooper` how to snoop around files and find items of interest. It contains an array of files to search. Each file can be associated one or more regular expressions. Each regular expression can be behavior customized and each regular expression can be associated with zero or event notifiers.
+This is a JSON file which describes to the `Snooper` how to snoop around files and directories on how to find items of interest using regular expressions. It contains an array of files to snoop. Each file can be associated one or more regular expressions. Each regular expression can be behavior customized and each regular expression can be associated with zero or event notifiers.
+
+
+        [
+            {
+                "snoop": "/opt/servers/app_server/log/my_app_server.log"
+                "sniffers" : [
+                    {
+                        "comment" : "Bad status from server",
+                        "regexp" : "Non OK Status",
+                        "lines" : {
+                            "before" : 2,
+                            "after" : 2
+                        },
+                        "notify_by" : {
+                            "email" : {
+                                "to" : "admin@noxaos.com"
+                            }
+                        }
+                    }
+                 ]
+            }
+        ]
+
 
 ### Snoopers
-Each element in the array is associated either a file or a directory that will be snooped.
+Each element in the `JSON` `array` is associated either a file or a directory that will be snooped.
 
-#### File Snoopers
+##### File Snoopers
 Each `Snooper` is associated with one file.
 
         [
             {
-                "input": "path_to_file"
+                "snoop": "/opt/servers/app_server/log/my_app_server.log"
             }
         ]
 
-#### Directory Snoopers
-Each `Snooper` is associated with one directory. If the `glob` is not specified then every file in the directory is snooped. The `glob` value is passed to Ruby's [`Dir.glob`](http://www.ruby-doc.org/core-2.1.1/Dir.html#method-c-glob)
+The above specification will snoop the file `/opt/servers/app_server/log/my_app_server.log`
+
+##### Directory Snoopers
+Each `Snooper` is associated with one directory. If the `glob` is not specified then every file in the directory is snooped. The `glob` string value is passed to Ruby's [`Dir.glob`](http://www.ruby-doc.org/core-2.1.1/Dir.html#method-c-glob)
 
         [
          { "dir" :
@@ -59,15 +84,53 @@ Each `Snooper` is associated with one directory. If the `glob` is not specified 
 
 The above specification will snoop all files in directory '/opt/servers/app_server/log` with a suffix of `.log`
 
+#### Defining Snooper Regular Expressions
+Each `Snooper` has one or more regular expression specifications. This array of regular expressions are used to sniff around the files. These are identified as `Sniffers`.
 
+##### Sniffer Attributes
 
+* `comment`    Typically used by a `Notifier`, such as in the subject line in an email notifier.
+* `regexp`     The value of this string is passed to ruby's [Regexp](http://www.ruby-doc.org/core-2.1.1/Regexp.html)
+* `lines`
+    * `before` Number of lines to print out before the matched line
+    * `after`  Number of lines to print out after the matched line
+* `notify_by`  This is a list of event notifiers to use when a line is matched
 
+        "sniffers" : [
+            {
+                "comment" : "Bad status from server",
+                "regexp" : "Non OK Status",
+                "lines" : {
+                    "before" : 2,
+                    "after" : 2
+                },
+                "notify_by" : {
+                    "email" : {
+                        "to" : "admin@noxaos.com"
+                    }
+                }
+            }
+         ]
+
+## Notifiers
+
+### Using a Notifier
+
+### Configuring a Notifier for the Manager
+
+### Configuring a Notifier for a Snooper
+
+### Building Notifiers
+
+### Registering Notifiers
+
+### Dynamically loading Notifiers
 
 
 ## History
 Written this handy little utility too many times too count. From the ancient times via Rob Pikes and the gang's `sh`,`grep`, `awk`, `sed` and `mail` to Larry Wall's wonderful `perl` to the latest and best yet `ruby` from Matz.
 
-        grep -H -n -B 2 -A 2 'Look for this' ./log/some.log | awk ... | ...
+        grep -H -n -B 2 -A 2 'Look for this' ./log/some.log | awk ... |  mail ...                   
 
 ## Contributing
 

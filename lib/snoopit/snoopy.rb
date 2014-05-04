@@ -12,7 +12,7 @@ module Snoopit
     end
 
     def setup_input(params)
-      @input = params['input']
+      @input = params['snoop']
     end
 
     def setup_dir(params)

@@ -13,7 +13,7 @@ describe 'Snooper' do
   def test_snooper(snooper)
     snooper.snoopies.size.should eq 1
     snoopy = snooper.snoopies[0]
-    snoopy.input.should eq @jsnoopy['input']
+    snoopy.input.should eq @jsnoopy['snoop']
     snoopy.dir.should eq @jsnoopy['dir']['path']
     snoopy.glob.should eq @jsnoopy['dir']['glob']
     snoopy.input_check?.should == true
@@ -50,7 +50,7 @@ describe 'Snooper' do
     end
 
     it 'loads a regexp configuration and with invalid input and dir via hash' do
-      @jsnoopy['input'] = nil
+      @jsnoopy['snoop'] = nil
       expect { @snooper.load_array [ @jsnoopy ] }.to raise_error ArgumentError
     end
 
