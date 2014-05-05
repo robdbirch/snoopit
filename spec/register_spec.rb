@@ -96,4 +96,10 @@ describe 'Register' do
     register[0].should eq 'foo'
   end
 
+  it 'test enumerable' do
+    rtest = [1,2,3,4,5]
+    register = Register.new 5, rtest
+    register.each_with_index { |r, i| r.should eq rtest[i] }
+  end
+
 end

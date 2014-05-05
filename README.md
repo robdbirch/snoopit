@@ -57,10 +57,10 @@ This is a JSON file which describes to the `Snooper` how to snoop around files a
 
 
 ### Snoopers
-Each element in the `JSON` `array` is associated either a file or a directory that will be snooped.
+Each element in the `JSON` `array` is associated with either a file or a directory that will be snooped.
 
 ##### File Snoopers
-Each `Snooper` is associated with one file.
+Each file `Snooper` is associated with one file.
 
         [
             {
@@ -71,7 +71,7 @@ Each `Snooper` is associated with one file.
 The above specification will snoop the file `/opt/servers/app_server/log/my_app_server.log`
 
 ##### Directory Snoopers
-Each `Snooper` is associated with one directory. If the `glob` is not specified then every file in the directory is snooped. The `glob` string value is passed to Ruby's [`Dir.glob`](http://www.ruby-doc.org/core-2.1.1/Dir.html#method-c-glob)
+Each directory `Snooper` is associated with one directory. If the `glob` is not specified then every file in the directory is snooped. The `glob` string value is passed to Ruby's [`Dir.glob`](http://www.ruby-doc.org/core-2.1.1/Dir.html#method-c-glob)
 
         [
          { "dir" :
@@ -85,7 +85,7 @@ Each `Snooper` is associated with one directory. If the `glob` is not specified 
 The above specification will snoop all files in directory '/opt/servers/app_server/log` with a suffix of `.log`
 
 #### Defining Snooper Regular Expressions
-Each `Snooper` has one or more regular expression specifications. This array of regular expressions are used to sniff around the files. These are identified as `Sniffers`.
+Each `Snooper` has one or more regular expression specifications. This array of regular expressions are used to sniff through the files. These are identified as `Sniffers`.
 
 ##### Sniffer Attributes
 
@@ -124,13 +124,15 @@ Each `Snooper` has one or more regular expression specifications. This array of 
 
 ### Registering Notifiers
 
-### Dynamically loading Notifiers
+### Dynamically Loading Notifiers
 
 
 ## History
 Written this handy little utility too many times too count. From the ancient times via Rob Pikes and the gang's `sh`,`grep`, `awk`, `sed` and `mail` to Larry Wall's wonderful `perl` to the latest and best yet `ruby` from Matz.
 
-        grep -H -n -B 2 -A 2 'Look for this' ./log/some.log | awk ... |  mail ...                   
+        grep -H -n -B 2 -A 2 'Look for this' ./log/some.log | awk ... |  mail ...
+
+
 
 ## Contributing
 

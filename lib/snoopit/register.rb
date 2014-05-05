@@ -3,6 +3,8 @@ module Snoopit
   # Behaves a bit like a CPU register
   class Register
 
+    include Enumerable
+
     attr :size, :register
 
     # index always points to where the next element will be added
@@ -55,6 +57,10 @@ module Snoopit
 
     def to_json(*a)
       as_json.to_json(*a)
+    end
+
+    def each
+      @register.each { |r| yield r }
     end
 
   end
