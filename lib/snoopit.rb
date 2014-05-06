@@ -5,6 +5,10 @@ require 'snoopit/snooper'
 require 'snoopit/snoopy'
 require 'snoopit/sniffer'
 require 'snoopit/detected'
+require 'snoopit/notification_manager'
+require 'snoopit/notifier'
+require 'snoopit/notifiers/email'
+require 'snoopit/file_track'
 
 module Snoopit
 

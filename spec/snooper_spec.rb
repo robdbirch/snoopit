@@ -6,7 +6,7 @@ describe 'Snooper' do
     @file    = File.expand_path('../support/snoopies.json', __FILE__)
     @json    = IO.read(@file)
     @jhash   = JSON.parse(@json)
-    @jsnoopy = @jhash[0]
+    @jsnoopy = @jhash['snoopers'][0]
     @snooper = Snooper.new
   end
 
@@ -19,27 +19,31 @@ describe 'Snooper' do
     snoopy.input_check?.should == true
   end
 
-  it 'loads a regexp configuration file and validates input and dir via file' do
-    @snooper.load_file @file
-    test_snooper @snooper
-  end
+  context 'snooper initialization' do
 
-  it 'loads a regexp configuration and validates input and dir via json string' do
-    @snooper.load_json @json
-    test_snooper @snooper
-  end
+    it 'loads a regexp configuration file and validates input and dir via file' do
+      @snooper.load_file @file
+      test_snooper @snooper
+    end
 
-  it 'loads a regexp configuration and validates input and dir via array of snoopies' do
-    @snooper.load_array @jhash
-    test_snooper @snooper
-  end
+    it 'loads a regexp configuration and validates input and dir via json string' do
+      @snooper.load_json @json
+      test_snooper @snooper
+    end
 
-  it 'loads a regexp configuration and with invalid input file' do
-    expect { @snooper.load_file(nil) }.to raise_error ArgumentError
-  end
+    it 'loads a regexp configuration and validates input and dir via array of snoopies' do
+      @snooper.load_snoopers @jhash
+      test_snooper @snooper
+    end
 
-  it 'loads a regexp configuration and with no snoopies via empty hash' do
-    expect { @snooper.load_array([]) }.to raise_error ArgumentError
+    it 'loads a regexp configuration and with invalid input file' do
+      expect { @snooper.load_file(nil) }.to raise_error ArgumentError
+    end
+
+    it 'loads a regexp configuration and with no snoopies via empty hash' do
+      expect { @snooper.load_snoopers ({ 'snoopers' => [] }) }.to raise_error ArgumentError
+    end
+
   end
 
   context 'file tests' do
@@ -51,11 +55,11 @@ describe 'Snooper' do
 
     it 'loads a regexp configuration and with invalid input and dir via hash' do
       @jsnoopy['snoop'] = nil
-      expect { @snooper.load_array [ @jsnoopy ] }.to raise_error ArgumentError
+      expect { @snooper.load_snoopers  @jhash }.to raise_error ArgumentError
     end
 
     it 'loads a snoopies json file and sniffs out a log file' do
-      @snooper.load_array [ @jsnoopy ]
+      @snooper.load_snoopers  @jhash
       @snooper.snoopies.size.should == 1
       @snooper.snoopies[0].sniffers.size.should == 3
       snoopies = @snooper.snoop
@@ -92,7 +96,7 @@ describe 'Snooper' do
         sniffer['lines']['before'] = 0
         sniffer['lines']['after'] = 0
       end
-      @snooper.load_array [ @jsnoopy ]
+      @snooper.load_snoopers  @jhash
       @snooper.snoopies.size.should == 1
       @snooper.snoopies[0].sniffers.size.should == 3
       snoopies = @snooper.snoop
@@ -130,7 +134,7 @@ describe 'Snooper' do
         sniffer['lines']['before'] = 0
         sniffer['lines']['after'] = 1
       end
-      @snooper.load_array [ @jsnoopy ]
+      @snooper.load_snoopers  @jhash
       @snooper.snoopies.size.should == 1
       @snooper.snoopies[0].sniffers.size.should == 3
       snoopies = @snooper.snoop
@@ -168,7 +172,7 @@ describe 'Snooper' do
         sniffer['lines']['before'] = 1
         sniffer['lines']['after'] = 0
       end
-      @snooper.load_array [ @jsnoopy ]
+      @snooper.load_snoopers  @jhash
       @snooper.snoopies.size.should == 1
       @snooper.snoopies[0].sniffers.size.should == 3
       snoopies = @snooper.snoop
@@ -205,7 +209,7 @@ describe 'Snooper' do
     end
 
     def dump_it
-      @snooper.load_array [ @jsnoopy ]
+      @snooper.load_snoopers  [ @jsnoopy ]
       Snoopit.logger.level = ::Logger::DEBUG
       tracked = @snooper.snoop
       puts "Number of snoopies with found data: #{tracked.size}"
@@ -238,7 +242,7 @@ describe 'Snooper' do
 
     it 'loads a snoopies json file and sniffs out a directory' do
       @jsnoopy['dir']['glob'] = nil
-      @snooper.load_array [ @jsnoopy ]
+      @snooper.load_snoopers @jhash
       @snooper.snoopies.size.should == 1
       @snooper.snoopies[0].sniffers.size.should == 3
       snoopies = @snooper.snoop
@@ -272,7 +276,7 @@ describe 'Snooper' do
 
 
     it 'loads a snoopies json file and sniffs out a glob directory' do
-      @snooper.load_array [ @jsnoopy ]
+      @snooper.load_snoopers @jhash
       @snooper.snoopies.size.should == 1
       @snooper.snoopies[0].sniffers.size.should == 3
       snoopies = @snooper.snoop
@@ -303,7 +307,25 @@ describe 'Snooper' do
         end
       end
     end
-
   end
+
+  context 'notifiers' do
+
+    it 'check notifiers' do
+      @snooper.load_snoopers @jhash
+      snoopies = @snooper.snoop
+      snoopies.each do |snoopy|
+        snoopy.sniffers.each do |sniffer|
+          sniffer.notifiers.size.should eq 1 unless sniffer.notifiers.nil?
+          sniffer.notifiers.each do |notifier|
+            next if notifier.nil?
+            notifier.should include 'email'
+            notifier['email'].should include 'to'
+          end
+        end
+      end
+    end
+  end
+
 
 end

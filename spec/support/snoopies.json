@@ -1,50 +1,58 @@
-[
-    {
-        "snoop" : "/Users/rbirch/Development/projects/snoopit/spec/support/log/snoop_log.test",
-        "dir": {
-            "path" : "/Users/rbirch/Development/projects/snoopit/spec/support/log",
-            "glob": "*.test"
-        },
-        "sniffers" : [
-            {
-                "comment" : "Bad status from lisp server",
-                "regexp" : "Non OK Status",
-                "lines" : {
-                    "before" : 2,
-                    "after" : 2
-                },
-                "notify_by" : {
-                    "email" : {
-                        "to" : "admin@noxaos.com"
-                    }
-                }
+{  "snoopers" :
+    [
+
+        {
+            "snoop" : "/Users/rbirch/Development/projects/snoopit/spec/support/log/snoop_log.test",
+            "dir": {
+                "path" : "/Users/rbirch/Development/projects/snoopit/spec/support/log",
+                "glob": "*.test"
             },
-            {
-                "comment" : "Failed Bulk load, typically one or more bad records. Need to use manual loader",
-                "regexp" : "Failed to bulk load",
-                "lines" : {
-                    "before" : 2,
-                    "after" : 2
+            "sniffers" : [
+                {
+                    "comment" : "Bad status from lisp server",
+                    "regexp" : "Non OK Status",
+                    "lines" : {
+                        "before" : 2,
+                        "after" : 2
+                    },
+                    "notify" : [
+                                 {  "email" : {   "to": "admin@noxaos.com"   } }
+                    ]
                 },
-                "notify_by" : {
-                    "email" : {
-                        "to" : "admin@noxaos.com"
-                    }
-                }
-            },
-            {
-                "comment" : "Data gathered to generate a statistics report",
-                "regexp" : "Total Number of records:",
-                "lines" : {
-                    "before" : 1,
-                    "after" : 1
+                {
+                    "comment" : "Failed Bulk load, typically one or more bad records. Need to use manual loader",
+                    "regexp" : "Failed to bulk load",
+                    "lines" : {
+                        "before" : 2,
+                        "after" : 2
+                    },
+                    "notify" : [
+                        {  "email" : {   "to": "admin@noxaos.com"   } }
+                    ]
+
                 },
-                "notify_by" : {
-                    "email" : {
-                        "to" : "admin@noxaos.com"
-                    }
+                {
+                    "comment" : "Data gathered to generate a statistics report",
+                    "regexp" : "Total Number of records:",
+                    "lines" : {
+                        "before" : 1,
+                        "after" : 1
+                    },
+                    "notify" : [
+                        {  "email" : {   "to": "admin@noxaos.com"   } }
+                    ]
                 }
-            }
-        ]
-    }
-]
+            ]
+        }
+    ],
+    "notifiers" :
+        {
+            "email" : {
+                    "smtp-server" : "smtp.gmail.com",
+                    "port" : 587,
+                    "tls" : true,
+                    "user" : "",
+                    "password" : ""
+                }
+        }
+}

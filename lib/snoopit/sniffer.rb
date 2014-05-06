@@ -1,7 +1,7 @@
 module Snoopit
   class Sniffer
 
-    attr :pre_before, :before, :after, :comment, :regexp, :sniffed
+    attr :pre_before, :before, :after, :comment, :regexp, :sniffed, :notifiers
 
     def initialize(sniffer_params)
       @before  = sniffer_params['lines']['before'].nil? ? 2 : sniffer_params['lines']['before']
@@ -9,7 +9,12 @@ module Snoopit
       @after   = sniffer_params['lines']['after'].nil? ? 2 : sniffer_params['lines']['after']
       @comment = sniffer_params['comment']
       @regexp  = Regexp.new sniffer_params['regexp']
+      setup_notifiers sniffer_params
       @sniffed = []
+    end
+
+    def setup_notifiers(params)
+      @notifiers = params['notify'] unless params['notify'] .nil?
     end
 
     def track(file, line_no, line)
@@ -31,8 +36,9 @@ module Snoopit
           before: @before,
           after: @after,
           comment: @comment,
-          regext: @regexp.to_json,
-          sniffed: @sniffed
+          regexp: @regexp.to_json,
+          sniffed: @sniffed,
+          notifiers: @notifiers
       }
     end
 

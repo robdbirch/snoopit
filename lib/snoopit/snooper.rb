@@ -2,7 +2,7 @@ require 'json'
 module Snoopit
   class Snooper
 
-    attr :snoopies
+    attr :snoopies, :notify_manager
 
     def initialize(logger=nil, log_level=::Logger::INFO)
       @snoopies = []
@@ -14,22 +14,32 @@ module Snoopit
     # @param snoopies_file [String] path to file
     def load_file(snoopies_file)
       raise ArgumentError.new "Invalid Snooper JSON File: #{snoopies_file}" if (snoopies_file.nil?) || (! File.exist? snoopies_file)
-      load_array JSON.parse(IO.read(snoopies_file))
+      json_hash = JSON.parse(IO.read(snoopies_file))
+      load_snoopers json_hash
+      load_notifiers json_hash
     end
 
     # Load the configuration from a file
-    # @param snoopies_json [String] json string
-    def load_json(snoopies_json)
-      load_array JSON.parse(snoopies_json)
+    # @param json [String] json string
+    def load_json(json)
+      json_hash = JSON.parse(json)
+      load_snoopers json_hash
+      load_noitifier json_hash
     end
 
     # Load the configuration from a file
-    # @param snoopies_array [Array]
-    def load_array(snoopies_array)
-      snoopies_array.each do |s|
+    # @param json_hash [Hash]
+    def load_snoopers(json_hash)
+      snoopies_json = json_hash['snoopers']
+      snoopies_json.each do |s|
         @snoopies << Snoopy.new(s)
       end
       raise ArgumentError.new 'There are no Snoopies in the JSON Snooper ' if @snoopies.size == 0
+    end
+
+    def load_notifiers(json_hash)
+      @notifier = NotificationManager.new
+      @notifier.load_notifier_config json_hash['notifiers']
     end
 
     # Use the snoopies and start snooping
@@ -63,7 +73,7 @@ module Snoopit
 
     def get_glob_list(snoopy)
       Snoopit.logger.debug "Snooping glob: #{snoopy.glob}"
-      cwd = Dir.getwd()
+      cwd = Dir.getwd
       begin
         Dir.chdir snoopy.dir
         files = Dir.glob snoopy.glob
