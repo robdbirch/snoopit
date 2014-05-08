@@ -16,7 +16,7 @@
                         "after" : 2
                     },
                     "notify" : [
-                                 {  "email" : {   "to": "admin@noxaos.com"   } }
+                            { "Test Notifier": null }
                     ]
                 },
                 {
@@ -27,7 +27,7 @@
                         "after" : 2
                     },
                     "notify" : [
-                        {  "email" : {   "to": "admin@noxaos.com"   } }
+                        { "Test Notifier": null }
                     ]
 
                 },
@@ -39,7 +39,7 @@
                         "after" : 1
                     },
                     "notify" : [
-                        {  "email" : {   "to": "admin@noxaos.com"   } }
+                        { "Test Notifier": null }
                     ]
                 }
             ]

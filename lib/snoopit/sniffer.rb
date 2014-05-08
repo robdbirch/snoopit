@@ -19,7 +19,7 @@ module Snoopit
 
     def track(file, line_no, line)
       matched = @regexp.match(line) do |m|
-        @sniffed << Detected.new(@pre_before, @after, line, file, line_no)
+        @sniffed << Detected.new(@comment, @pre_before, @after, line, file, line_no)
       end
       @pre_before.push_front line if matched.nil?
       tracking line

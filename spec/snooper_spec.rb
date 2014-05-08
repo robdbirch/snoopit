@@ -237,7 +237,6 @@ describe 'Snooper' do
 
     before(:each) do
       Snoopit.logger.level = ::Logger::DEBUG
-      #@jsnoopy['dir']['path'] = nil
     end
 
     it 'loads a snoopies json file and sniffs out a directory' do
@@ -273,7 +272,6 @@ describe 'Snooper' do
         end
       end
     end
-
 
     it 'loads a snoopies json file and sniffs out a glob directory' do
       @snooper.load_snoopers @jhash
@@ -319,12 +317,16 @@ describe 'Snooper' do
           sniffer.notifiers.size.should eq 1 unless sniffer.notifiers.nil?
           sniffer.notifiers.each do |notifier|
             next if notifier.nil?
-            notifier.should include 'email'
-            notifier['email'].should include 'to'
+            if sniffer.comment.include? 'Failed Bulk load'
+              expect(notifier).to include 'Test Notifier'
+            else
+              expect (notifier).should include 'Test Notifier'
+            end
           end
         end
       end
     end
+
   end
 
 

@@ -4,13 +4,15 @@ module Snoopit
 
     attr :snoopies, :notify_manager
 
-    def initialize(logger=nil, log_level=::Logger::INFO)
+    def initialize(notifications=true, logger=nil, log_level=::Logger::INFO)
       @snoopies = []
+      @notifier = NotificationManager.new if notifications
       Snoopit::Logger.create_logger(logger) unless logger.nil?
       Snoopit.logger.level = log_level
     end
 
     # Load the configuration from a file
+    # Calls <code>load_snoopers(json_hash)</code> and <code>load_notifiers(json_hash)</code> and
     # @param snoopies_file [String] path to file
     def load_file(snoopies_file)
       raise ArgumentError.new "Invalid Snooper JSON File: #{snoopies_file}" if (snoopies_file.nil?) || (! File.exist? snoopies_file)
@@ -24,7 +26,7 @@ module Snoopit
     def load_json(json)
       json_hash = JSON.parse(json)
       load_snoopers json_hash
-      load_noitifier json_hash
+      load_notifiers json_hash
     end
 
     # Load the configuration from a file
@@ -38,8 +40,15 @@ module Snoopit
     end
 
     def load_notifiers(json_hash)
-      @notifier = NotificationManager.new
-      @notifier.load_notifier_config json_hash['notifiers']
+      @notifier.load_notifier_config json_hash['notifiers'] unless @notifier.nil?
+    end
+
+    def register_notifer(notifier)
+      @notifier.register notifier
+    end
+
+    def unregister_notifer(notifier)
+      @notifier.unregister notifier
     end
 
     # Use the snoopies and start snooping

@@ -4,25 +4,22 @@ module Snoopit
   # Override {#notify} method
   class Notifier
 
-    attr_accessor :name, :configuration
+    attr_accessor :name, :configuration, :klass
 
     # The name is used by the Snooper to identify type of notifier to create
     # @param name [String] name of notifier if the name is nil the
-    def initialize(name=nil)
+    def initialize(config=nil, name=nil, klass=nil)
       @name = name.nil? ? self.class.name : name
+      @klass = klass.nil? ? self.class.name : klass
+      set_config(config) unless config.nil?
     end
 
     # This is a json configuration from the <code>snoopers.json</code> notifiers
-    def set_config(configuration)
-      @configuration = configuration
+    def set_config(config)
+      @config = config
     end
 
-    # @param file [String] path to configuration file
-    def config_file(file)
-
-    end
-
-    def notify(found)
+    def notify(found, notifiy_params)
       raise NotImplementedError.new 'Notifier#notify'
     end
 

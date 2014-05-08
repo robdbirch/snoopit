@@ -1,10 +1,11 @@
 module Snoopit
   class Detected
 
-    attr :before, :after, :after_count, :comment, :regexp, :match, :finished, :file, :line_no
+    attr :comment, :before, :after, :after_count, :regexp, :match, :finished, :file, :line_no
 
-    def initialize(pre_before, after, match, file, line_no)
+    def initialize(comment, pre_before, after, match, file, line_no)
       setup_before pre_before
+      @comment     = comment
       @after_count = 0
       @after       = Register.new(after)
       @match       = match
