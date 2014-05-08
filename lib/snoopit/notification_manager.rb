@@ -12,7 +12,9 @@ module Snoopit
 
     def load_notifier_config(config)
       @config = config
-      load_default_notifiers unless @config.nil?
+      load_default_notifiers
+      load = @config['load']
+      load_files(load) unless load.nil?
     end
 
     def register(notifier)
@@ -58,6 +60,15 @@ module Snoopit
 
     private
 
+    def load_default_notifiers
+      path = File.expand_path('../notifiers', __FILE__)
+      Dir.entries(path).each do |file|
+        next if File.directory? file
+        file_require "#{path}/#{file}"
+      end
+      create_default_notifiers
+    end
+
     def create_default_notifiers
       Snoopit::Notifiers.constants.select do  |c|
         if Class === Snoopit::Notifiers.const_get(c)
@@ -68,17 +79,25 @@ module Snoopit
       end
     end
 
-    def load_default_notifiers
-      path = File.expand_path('../notifiers', __FILE__)
-      Dir.entries(path).each do |file|
-        next if File.directory? file
-        file_require "#{path}/#{file}"
-      end
-      create_default_notifiers
+    def file_require(file)
+      Snoopit.logger.debug "Requiring notifier file: #{file}"
+      require file
     end
 
-    def file_require(file)
-      require file
+    def load_files(load)
+      load.keys.each do |key|
+        entry = load[key]
+        next if entry['file'].nil?
+        next if entry['class'].nil?
+        file_require entry['file']
+        create_notifier entry['class'], entry['config']
+      end
+    end
+
+    def create_notifier(klass, notifier_config=nil)
+      o = Object.const_get(klass).new
+      notifier_config.nil? ? o.set_config(@config[o.name]) : o.set_config(notifier_config)
+      @active[o.name] = o
     end
 
     def get_sniffed_messages(sniffer)

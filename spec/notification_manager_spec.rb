@@ -73,4 +73,29 @@ describe 'Notification Manager' do
 
   end
 
+  context 'Config load Notifiers', :focus do
+
+    before(:each) do
+      Snoopit.logger.level = ::Logger::DEBUG
+      @nm = NotificationManager.new
+      @nm.load_notifier_config @json_hash['notifiers']
+      @snooper = Snooper.new false
+      @notifier_name ='Test Notifier Load'
+      jss = @json_hash['snoopers'][0]['sniffers']
+      jss[0]['notify'][0] = { @notifier_name => nil }
+      jss[1]['notify'][0] = { @notifier_name => nil }
+      jss[2]['notify'][0] = { @notifier_name => nil }
+      @snooper.load_snoopers @json_hash
+    end
+
+    it 'load notifier from snoopies.json config load section' do
+      expect(@nm.active).to include @notifier_name
+      snoopies = @snooper.snoop
+      @nm.notify snoopies
+      tnl = @nm.get_notifier @notifier_name
+      expect(tnl.found.size).to eq 216
+    end
+
+  end
+
 end

@@ -52,8 +52,15 @@
             ]
         }
     ],
-    "notifiers" :
+  "notifiers" :
     {
+        "load" : {
+            "Notifer Identifier" : {
+                "file" : "/path/to/mynotifier",
+                "class" : "MyNotifierClassName",
+                "config" : { "configParms" : "PassedAfterCreated"}
+            }
+        },
         "email" : {
             "smtp-server" : "smtp.gmail.com",
             "port" : 587,
