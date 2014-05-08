@@ -1,4 +1,5 @@
 require 'net/smtp'
+require 'date'
 
 module Snoopit
   module Notifiers

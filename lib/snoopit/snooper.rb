@@ -60,6 +60,7 @@ module Snoopit
           snoop_file snoopy
         end
       end
+      @notifier.notify @snoopies unless @notifier.nil?
       get_tracked
     end
 

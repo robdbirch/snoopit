@@ -10,6 +10,7 @@ options[:line_numbers] = false
 options[:new_line] = true
 options[:json] = false
 options[:pretty_json] = false
+options[:notifications] = false
 
 OptionParser.new do |opts|
 
@@ -39,6 +40,10 @@ OptionParser.new do |opts|
 
   opts.on('-N', '--no-newline', 'Do not output new line between found items' ) do |l|
     options[:new_line] = false
+  end
+
+  opts.on('-n', '--enable-notifications', 'Enable notifications' ) do |n|
+    options[:notifications] = true
   end
 
   opts.on('-l', '--line-numbers', 'show line numbers' ) do |l|
@@ -122,10 +127,9 @@ def dump_json(snoopies, pretty=false)
   else
     puts snoopies.to_json
   end
-
 end
 
-snooper = Snoopit::Snooper.new
+snooper = Snoopit::Snooper.new options[:notifications]
 snooper.load_file options[:snoopies]
 snoopies = snooper.snoop
 
