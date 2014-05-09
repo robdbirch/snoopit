@@ -64,7 +64,7 @@ describe 'Notification Manager' do
     end
 
     it 'receives messages' do
-      Snoopit.logger.level = ::Logger::DEBUG
+      #Snoopit.logger.level = ::Logger::DEBUG
       snoopies = @snooper.snoop
       @nm.notify snoopies
       expect(@tn.found.size).to eq 216
@@ -73,10 +73,10 @@ describe 'Notification Manager' do
 
   end
 
-  context 'Config load Notifiers', :focus do
+  context 'Config load Notifiers' do
 
     before(:each) do
-      Snoopit.logger.level = ::Logger::DEBUG
+      #Snoopit.logger.level = ::Logger::DEBUG
       @nm = NotificationManager.new
       @nm.load_notifier_config @json_hash['notifiers']
       @snooper = Snooper.new false

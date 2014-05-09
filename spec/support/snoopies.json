@@ -47,12 +47,20 @@
     ],
     "notifiers" :
         {
-            "email" : {
-                    "smtp-server" : "smtp.gmail.com",
-                    "port" : 587,
-                    "tls" : true,
-                    "user" : "",
-                    "password" : ""
+            "load" : {
+                "Test Notifier Load" : {
+                    "file" : "/Users/rbirch/Development/projects/snoopit/spec/support/test_notifier_load",
+                    "class" : "TestNotifierLoad",
+                    "config" : { }
                 }
+            },
+            "email" : {
+                "smtp-server" : "smtp.gmail.com",
+                "port" : 587,
+                "tls" : true,
+                "user" : "",
+                "password" : "",
+                "authentication" : "login"
+            }
         }
 }

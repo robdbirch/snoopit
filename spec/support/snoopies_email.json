@@ -19,7 +19,7 @@
                         { "email": {
                             "to": [ "admin@noxaos.com", "robert.birch@noxaos.com" ],
                             "from" : "snooper@noxaos.com"
-                        }
+                           }
                         }
                     ]
 
@@ -33,7 +33,7 @@
                     "smtp-server" : "smtp.gmail.com",
                     "port" : 587,
                     "tls" : true,
-                    "user" : "robdbirch@gmail.com",
+                    "user" : "",
                     "password" : "",
                     "authentication" : "login"
 

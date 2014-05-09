@@ -210,7 +210,7 @@ describe 'Snooper' do
 
     def dump_it
       @snooper.load_snoopers  [ @jsnoopy ]
-      Snoopit.logger.level = ::Logger::DEBUG
+      #Snoopit.logger.level = ::Logger::DEBUG
       tracked = @snooper.snoop
       puts "Number of snoopies with found data: #{tracked.size}"
       tracked.each do |snoopy|
@@ -236,7 +236,7 @@ describe 'Snooper' do
   context 'directory testing' do
 
     before(:each) do
-      Snoopit.logger.level = ::Logger::DEBUG
+      #Snoopit.logger.level = ::Logger::DEBUG
     end
 
     it 'loads a snoopies json file and sniffs out a directory' do

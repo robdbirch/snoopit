@@ -17,3 +17,5 @@ test/version_tmp
 tmp
 .ruby-gemset
 .ruby-version
+spec/support/db
+
