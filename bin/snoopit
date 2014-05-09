@@ -11,6 +11,8 @@ options[:new_line] = true
 options[:json] = false
 options[:pretty_json] = false
 options[:notifications] = false
+options[:tracking] = false
+options[:tracking_file] = './snoopit_db.json'
 
 OptionParser.new do |opts|
 
@@ -27,6 +29,15 @@ OptionParser.new do |opts|
       puts line
     end
     exit
+  end
+
+  opts.on('-T', '--tracking', 'Enable log file tracking using file ./snoopit_db.json') do
+    options[:tracking] = true
+  end
+
+  opts.on('-f', '--tracking-file file_name', 'Specify a different db name and location instead of the default ./snoopit_db.json') do |tracking_file|
+    options[:tracking] = true
+    options[:tracking_file] = tracking_file
   end
 
   opts.on('-j', '--json', 'Generate output in json' ) do
@@ -129,7 +140,14 @@ def dump_json(snoopies, pretty=false)
   end
 end
 
-snooper = Snoopit::Snooper.new options[:notifications]
+if options[:tracking]
+  puts "File tracking database: #{options[:tracking_file]}"
+else
+  options[:tracking_file] = nil
+end
+
+snooper = Snoopit::Snooper.new options[:notifications], options[:tracking_file], STDOUT, Logger::DEBUG
+#snooper = Snoopit::Snooper.new options[:notifications], options[:tracking_file]
 snooper.load_file options[:snoopies]
 snoopies = snooper.snoop
 

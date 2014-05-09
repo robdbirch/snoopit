@@ -34,7 +34,6 @@ module Snoopit
       #
       # @return [boolean] true if updated false not updated
       def updated?(file_handle)
-        updated = false
         stat = File.stat @file
         if (stat.size == @size) && (stat.mtime == @mtime) && (! init_stat)
           Snoopit.logger.debug "FileTracker.updated? file hasn't changed: #{@file}"
@@ -100,6 +99,7 @@ module Snoopit
         @size = hash['size']
         @mtime = Time.iso8601 hash['mtime']
         @last_line = hash['last_line']
+        @init_stat = false
       end
 
     end

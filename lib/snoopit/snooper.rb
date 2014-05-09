@@ -6,7 +6,7 @@ module Snoopit
 
     def initialize(notifications=true, db_file=nil, logger=nil, log_level=::Logger::INFO)
       @snoopies = []
-      @file_tracker = FileTracker.new unless db_file.nil?
+      @file_tracker = FileTracker.new db_file unless db_file.nil?
       @notifier = NotificationManager.new if notifications
       Snoopit::Logger.create_logger(logger) unless logger.nil?
       Snoopit.logger.level = log_level
@@ -121,7 +121,7 @@ module Snoopit
     end
 
     def file_read(snoopy, file_name)
-      line_no = 1
+      line_no = 0
       File.foreach file_name do |line|
         snoopy.sniff snoopy.input, line_no, line
         line_no += 1
