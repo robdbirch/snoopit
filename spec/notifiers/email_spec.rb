@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Email Notifier' do
+describe 'Email Notifier', :skip do
 
   before(:each) do
     @file        = File.expand_path('../../support/snoopies_email.json', __FILE__)
