@@ -9,6 +9,6 @@ group :test, :development do
   gem 'coveralls', require: false
 end
 
-gem 'awesome_print'
+gem 'awesome_print', '~> 1.2'
 
 

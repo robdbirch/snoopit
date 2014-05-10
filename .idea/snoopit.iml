@@ -205,6 +205,7 @@
           <root url="file://$MODULE_DIR$/log" />
           <root url="file://$MODULE_DIR$/.idea" />
           <root url="file://$MODULE_DIR$/support" />
+          <root url="file://$MODULE_DIR$/coverage" />
           <root url="file://$MODULE_DIR$/templates" />
         </CLASSES>
         <SOURCES>
@@ -213,6 +214,7 @@
           <root url="file://$MODULE_DIR$/log" />
           <root url="file://$MODULE_DIR$/.idea" />
           <root url="file://$MODULE_DIR$/support" />
+          <root url="file://$MODULE_DIR$/coverage" />
           <root url="file://$MODULE_DIR$/templates" />
         </SOURCES>
       </library>
@@ -232,7 +234,7 @@
     <orderEntry type="library" scope="PROVIDED" name="pry (v0.9.12.6, RVM: ruby-2.1-head [snoopit]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="pry-byebug (v1.3.2, RVM: ruby-2.1-head [snoopit]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rest-client (v1.6.7, RVM: ruby-2.1-head [snoopit]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rspec (v2.14.1, RVM: ruby-2.1-head [snoopit]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rspec (v2.14.0, RVM: ruby-2.1-head [snoopit]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rspec-core (v2.14.8, RVM: ruby-2.1-head [snoopit]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rspec-expectations (v2.14.5, RVM: ruby-2.1-head [snoopit]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rspec-mocks (v2.14.6, RVM: ruby-2.1-head [snoopit]) [gem]" level="application" />
