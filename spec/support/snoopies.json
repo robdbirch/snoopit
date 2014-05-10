@@ -2,9 +2,9 @@
     [
 
         {
-            "snoop" : "/Users/rbirch/Development/projects/snoopit/spec/support/log/snoop_log.test",
+            "snoop" : "./spec/support/log/snoop_log.test",
             "dir": {
-                "path" : "/Users/rbirch/Development/projects/snoopit/spec/support/log",
+                "path" : "./spec/support/log",
                 "glob": "*.test"
             },
             "sniffers" : [
@@ -49,7 +49,7 @@
         {
             "load" : {
                 "Test Notifier Load" : {
-                    "file" : "/Users/rbirch/Development/projects/snoopit/spec/support/test_notifier_load",
+                    "file" : "./spec/support/test_notifier_load",
                     "class" : "TestNotifierLoad",
                     "config" : { }
                 }
