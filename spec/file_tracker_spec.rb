@@ -115,7 +115,7 @@ describe 'File Tracker' do
       @ft2 = FileTracker.new @db_file
       ft_json_read = @ft2.get_file file_dup
       expect(ft_json_read.size).to be == dup.size
-      expect(ft_json_read.mtime.to_i).to be eq dup.mtime.to_i
+      expect(ft_json_read.mtime.to_i).to be == dup.mtime.to_i
       expect(ft_json_read.line_no).to be == dup.line_no
       expect(ft_json_read.file).to be == dup.file
       expect(ft_json_read.offset).to be == dup.offset
