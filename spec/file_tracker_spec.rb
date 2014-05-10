@@ -33,7 +33,7 @@ describe 'File Tracker' do
   context 'no database' do
 
     before(:each) do
-      Snoopit.logger.level = Logger::DEBUG
+      #Snoopit.logger.level = Logger::DEBUG
       @ft = FileTracker.new nil
     end
 
@@ -95,7 +95,7 @@ describe 'File Tracker' do
     before(:each) do
       file_path = File.expand_path('../support/db/snoop_db.json', __FILE__)
       Dir.mkdir './spec/support/db' unless Dir.exist? './spec/support/db'
-      Snoopit.logger.level = Logger::DEBUG
+      #Snoopit.logger.level = Logger::DEBUG
       @db_file = file_path
       File.delete @db_file if File.exist? @db_file
       @ft = FileTracker.new @db_file
@@ -115,7 +115,7 @@ describe 'File Tracker' do
       @ft2 = FileTracker.new @db_file
       ft_json_read = @ft2.get_file file_dup
       expect(ft_json_read.size).to be == dup.size
-      expect(ft_json_read.mtime).to be == dup.mtime
+      expect(ft_json_read.mtime.to_i).to be eq dup.mtime.to_i
       expect(ft_json_read.line_no).to be == dup.line_no
       expect(ft_json_read.file).to be == dup.file
       expect(ft_json_read.offset).to be == dup.offset
