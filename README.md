@@ -53,11 +53,13 @@ This is a JSON file which describes to the `Snooper` how to snoop around files a
                                         "before" : 2,
                                         "after" : 2
                                     },
-                                    "notify" : {
-                                        "email" : {
-                                            "to" : "admin@noxaos.com"
+                                    "notify" : [
+                                        {
+                                            "email" : {
+                                                "to" : "admin@noxaos.com"
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
                              ]
                         }
@@ -120,7 +122,7 @@ Each `Snooper` has one or more regular expression specifications. This array of 
 * `lines`
     * `before` Number of lines to print out before the matched line
     * `after`  Number of lines to print out after the matched line
-* `notify`     This is a list of event notifiers to use when a line is matched
+* `notify`     This is a list of event notifiers to use when a line is matched by the `regexp`
 
         "sniffers" : [
             {
@@ -130,17 +132,19 @@ Each `Snooper` has one or more regular expression specifications. This array of 
                     "before" : 2,
                     "after" : 2
                 },
-                "notify" : {
-                    "email" : {
-                       "to": [ "watcher@something.com", "admin@something.com" ],
-                       "from" : "snooper@something.com"
+                "notify" : [
+                    {
+                        "email" : {
+                            "to": [ "watcher@something.com", "admin@something.com" ],
+                            "from" : "snooper@something.com"
+                        }
                     }
-                }
+                ]
             }
          ]
 
 ## Notifiers
-After a file is snooped by the `Snooper` any items matched a `Sniffer` regular expressions can be sent by specifying a notifier. Notifier's can be used to send  notifications, such as an email, text messages, or enqueue for, or call a another service to take action based on the matched event.
+After a file has been snooped by a `Snooper` any items matched by a `Sniffer's` regular expression can be sent to a specified notifier. Notifier's can be used to send  notifications, such as an email, text messages, enqueue into a queueing system, or call a another service to take action based on the matched event.
 
 ### Using a Notifier
 Each `Sniffer` can use one or more notifiers. Notification parameters are specified for each `Sniffer` that uses a particular notifier. In the example above the `email` notifier parameters used are the `to` and `from` parameters.
