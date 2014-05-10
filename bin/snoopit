@@ -22,7 +22,7 @@ OptionParser.new do |opts|
     options[:snoopies] = r
   end
 
-  opts.on('-t', '--template', 'Generate and template snoopies.json file to stdout' ) do
+  opts.on('-t', '--template', 'Generate a template snoopies.json file to stdout' ) do
     template = File.expand_path '../../support/snoopies.json', __FILE__
     puts template
     File.readlines(template).each do |line|

@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Snoopit::VERSION
   spec.authors       = ["Robert Birch"]
   spec.email         = ["robdbirch@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.description   = %q{Snoops files for specified information via a simple configuration file}
+  spec.summary       = %q{Using regular expressions snoops files or directories for specific information. Sends events and tracks repeated invocations as not to send repeat events}
+  spec.homepage      = "https://github.com/robdbirch/snoopit/blob/master/README.md"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
