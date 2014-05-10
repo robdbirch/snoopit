@@ -93,9 +93,11 @@ describe 'File Tracker' do
   context 'with log database' do
 
     before(:each) do
+      file_path = File.expand_path('../support/db/snoop_db.json', __FILE__)
+      Dir.mkdir './spec/support/db' unless Dir.exist? './spec/support/db'
       Snoopit.logger.level = Logger::DEBUG
-      @db_file = File.expand_path('../support/db/snoop_db.json', __FILE__)
-      File.delete @db_file
+      @db_file = file_path
+      File.delete @db_file if File.exist? @db_file
       @ft = FileTracker.new @db_file
     end
 
