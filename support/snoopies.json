@@ -1,74 +1,67 @@
-{ "snoopers":
-    [
-        {
-            "snoop": "/Users/snoopers/log/app_server.log",
-            "dir": {
-                "path": "/Users/snoopers/log",
-                "glob": "*.log"
-            },
-            "sniffers": [
-                {
-                    "comment": "Bad status from app server",
-                    "regexp": "Non OK Status",
-                    "lines": {
-                        "before": 2,
-                        "after": 2
-                    },
-                    "notify": {
-                        "email": {
-                            "to": [ "someone@somemail.com", "somebody@somemail.com" ],
-                            "from": "snooper@noxaos.com"
-                        }
-                    }
-                },
-                {
-                    "comment": "Failed Bulk load failure!",
-                    "regexp": "Failed to bulk load",
-                    "lines": {
-                        "before": 2,
-                        "after": 2
-                    },
-                    "notify": {
-                        "email": {
-                            "to": [ "someone@somemail.com", "somebody@somemail.com" ],
-                            "from": "snooper@noxaos.com"
-                        }
-                    }
-                },
-                {
-                    "comment": "Data gathered to generate a statistics report",
-                    "regexp": "Total Number of records:",
-                    "lines": {
-                        "before": 1,
-                        "after": 1
-                    },
-                    "notify": {
-                        "email": {
-                            "to": [ "someone@somemail.com", "somebody@somemail.com" ],
-                            "from": "snooper@noxaos.com"
-                        }
-                    }
-                }
-            ]
-        }
-    ],
-  "notifiers" :
+{
+  "snoopers" : [
     {
-        "load" : {
-            "Notifer Identifier" : {
-                "file" : "/path/to/mynotifier",
-                "class" : "MyNotifierClassName",
-                "config" : { "configParms" : "PassedAfterCreated"}
+      "snoop" : "/Users/snoopers/log/app_server.log",
+      "dir" : {
+        "path" : "/Users/snoopers/log",
+        "glob" : "*.log"
+      },
+      "sniffers" : [
+        {
+          "comment" : "Bad status from app server",
+          "regexp" : "Non OK Status",
+          "lines" : {
+            "before" : 2,
+            "after" : 2
+          },
+          "notify" : [
+            {
+              "email" : {
+                "to" : "somebody@somemail.com",
+                "from" : "snooper@noxaos.com"
+              }
             }
+          ]
         },
-        "email" : {
-            "smtp-server" : "smtp.gmail.com",
-            "port" : 587,
-            "tls" : true,
-            "user" : "admin@foomail.com",
-            "password" : "",
-            "authentication" : "login"
-
+        {
+          "comment" : "Failed Bulk load failure!",
+          "regexp" : "Failed to bulk load",
+          "lines" : {
+            "before" : 2,
+            "after" : 2
+          },
+          "notify" : [
+            {
+              "email" : {
+                "to" : [
+                  "someone@somemail.com",
+                  "somebody@somemail.com"
+                ],
+                "from" : "snooper@noxaos.com"
+              }
+            }
+          ]
         }
+      ]
     }
+  ],
+  "notifiers" : {
+    "load" : {
+      "Notifer Identifier" : {
+        "file" : "/path/to/mynotifier",
+        "class" : "MyNotifierClassName",
+        "config" : {
+          "configParms" : "PassedAfterCreated"
+        }
+      }
+    },
+    "email" : {
+      "smtp-server" : "smtp.gmail.com",
+      "port" : 587,
+      "tls" : true,
+      "user" : "admin@foomail.com",
+      "password" : "",
+      "authentication" : "login"
+    }
+  }
 }

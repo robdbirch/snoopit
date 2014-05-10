@@ -146,6 +146,11 @@ else
   options[:tracking_file] = nil
 end
 
+if ! File.exist? options[:snoopies]
+  puts "Snooper json file does not exist: #{options[:snoopies]}"
+  exit 1
+end
+
 #snooper = Snoopit::Snooper.new options[:notifications], options[:tracking_file], STDOUT, Logger::DEBUG
 snooper = Snoopit::Snooper.new options[:notifications], options[:tracking_file]
 snooper.load_file options[:snoopies]
