@@ -97,7 +97,7 @@ module Snoopit
         @line_no = hash['line_no']
         @offset = hash['offset']
         @size = hash['size']
-        @mtime = Time.iso8601 hash['mtime']
+        @mtime = Time.parse hash['mtime']
         @last_line = hash['last_line']
         @init_stat = false
       end
