@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Email Notifier', :skip do
+describe 'Email Notifier'  do
 
   before(:each) do
     @file        = File.expand_path('../../support/snoopies_email.json', __FILE__)
@@ -12,7 +12,16 @@ describe 'Email Notifier', :skip do
     @nm.load_notifier_config @json_hash['notifiers']
   end
 
-  it 'email' do
+  it 'email stub' do
+    emn = @nm.get_notifier 'email'
+    expect(emn.name).to eq 'email'
+    snoopies = @snooper.snoop
+    e = @nm.get_notifier 'email'
+    e.stub(:notify)
+    @nm.notify(snoopies)
+  end
+
+  it 'email', :skip do
     emn = @nm.get_notifier 'email'
     expect(emn.name).to eq 'email'
     snoopies = @snooper.snoop
