@@ -249,6 +249,16 @@ Written this handy little utility too many times too count. From the ancient tim
 
         grep -H -n -B 2 -A 2 'Look for this' ./log/some.log | awk ... |  mail ...
 
+[Gem Version]: https://rubygems.org/gems/snoopit
+[Build Status]: https://travis-ci.org/robdbirch/snoopit
+[travis pull requests]: https://travis-ci.org/robdbirch/snoopit/pull_requests
+[Dependency Status]: https://gemnasium.com/robdbirch/snoopit
+[Coverage Status]: https://coveralls.io/r/robdbirch/snoopit
+
+[GV img]: https://badge.fury.io/rb/snoopit.png
+[BS img]: https://travis-ci.org/robdbirch/snoopit.png
+[DS img]: https://gemnasium.com/robdbirch/snoopit.png
+[CS img]: https://coveralls.io/repos/robdbirch/snoopit/badge.png?branch=master
 
 
 ## Contributing
