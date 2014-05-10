@@ -49,8 +49,7 @@ describe 'Snooper' do
   context 'file tests' do
 
     before(:each) do
-      @jsnoopy['dir']['path'] = nil
-      @jsnoopy['dir']['glob'] = nil
+      @jsnoopy['dir'] = nil
     end
 
     it 'loads a regexp configuration and with invalid input and dir via hash' do

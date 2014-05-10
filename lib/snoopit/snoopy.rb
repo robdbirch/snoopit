@@ -6,7 +6,7 @@ module Snoopit
     def initialize(params)
       @output = params['output']
       setup_input params
-      setup_dir params
+      setup_dir params unless params['dir'].nil?
       input_check?
       setup_sniffers params
     end
