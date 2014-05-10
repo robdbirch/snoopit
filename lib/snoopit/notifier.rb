@@ -19,7 +19,7 @@ module Snoopit
       @config = config
     end
 
-    def notify(found, notifiy_params)
+    def notify(found, notify_params)
       raise NotImplementedError.new 'Notifier#notify'
     end
 

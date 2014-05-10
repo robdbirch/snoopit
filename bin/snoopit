@@ -35,7 +35,7 @@ OptionParser.new do |opts|
     options[:tracking] = true
   end
 
-  opts.on('-f', '--tracking-file file_name', 'Specify a different db name and location instead of the default ./snoopit_db.json') do |tracking_file|
+  opts.on('-f', '--tracking-file file_name', 'Specify a different tracking file name and location instead of the default ./snoopit_db.json') do |tracking_file|
     options[:tracking] = true
     options[:tracking_file] = tracking_file
   end
