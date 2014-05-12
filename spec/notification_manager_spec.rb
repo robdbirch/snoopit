@@ -81,7 +81,7 @@ describe 'Notification Manager' do
       @nm.load_notifier_config @json_hash['notifiers']
       @snooper = Snooper.new false
       @notifier_name ='Test Notifier Load'
-      jss = @json_hash['snoopers'][0]['sniffers']
+      jss = @json_hash['snoopers']['SnoopTest']['sniffers']
       jss[0]['notify'][0] = { @notifier_name => nil }
       jss[1]['notify'][0] = { @notifier_name => nil }
       jss[2]['notify'][0] = { @notifier_name => nil }

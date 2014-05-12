@@ -26,7 +26,8 @@ Typical use is via the command line with a JSON specification file.
 
         Usage: snooper [options]
             -s, --snoopers snoopies.json     File contains one or more regular expressions to locate a line of interest in a file
-            -t, --template                   Generate and template snoopies.json file to stdout
+            -S, --snooper snooper_name       Only use the named snoooper. This option can be used more than once to use several snoopers.
+            -t, --template                   Generate a template snoopies.json file to stdout
             -T, --tracking                   Enable log file tracking using file ./snoopit_db.json
             -f, --tracking-file file_name    Specify a different tracking file name and location instead of the default ./snoopit_db.json
             -j, --json                       Generate output in json
@@ -37,13 +38,12 @@ Typical use is via the command line with a JSON specification file.
             -v, --verbose                    prints out file name, matched line number
             -h, --help
 
-
 ## Snooper Configuration
 This is a JSON file which describes to the `Snooper` how to snoop around files and directories to find items of interest using regular expressions. It contains an array of files to snoop. Each file can be associated one or more regular expressions. Each regular expression behavior can be customized and each regular expression can be associated with zero or more event notifiers. The `Snooper` file also specifies notifier configurations and how to load custom notifiers.
 
 
-        "snoopers" : [
-                        {
+        "snoopers" : {
+                       "AppServer": {
                             "snoop": "/opt/servers/app_server/log/my_app_server.log"
                             "sniffers" : [
                                 {
@@ -63,7 +63,7 @@ This is a JSON file which describes to the `Snooper` how to snoop around files a
                                 }
                              ]
                         }
-                     ],
+        },
         "notifiers" :
           {
               "load" : {
@@ -85,30 +85,31 @@ This is a JSON file which describes to the `Snooper` how to snoop around files a
 
 
 ### Snoopers
-Each element in the `JSON` `array` is associated with either a file or a directory that will be snooped.
+Each `Snooper` configured in the `JSON` file is associated with either a file or a directory that will be snooped.
 
 ##### File Snoopers
-Each file `Snooper` is associated with one file.
+Each file `Snooper` can be associated with one file.
 
-        [
-            {
+        "snoopers": {
+            "AppServer":  {
                 "snoop": "/opt/servers/app_server/log/my_app_server.log"
             }
-        ]
+         }
+
 
 The above specification will snoop the file `/opt/servers/app_server/log/my_app_server.log`
 
 ##### Directory Snoopers
-Each directory `Snooper` is associated with one directory. If the `glob` is not specified then every file in the directory is snooped. The `glob` string value is passed to Ruby's [`Dir.glob`](http://www.ruby-doc.org/core-2.1.1/Dir.html#method-c-glob)
+Each directory `Snooper` can be associated with one directory. If the `glob` is not specified then every file in the directory is snooped. The `glob` string value is passed to Ruby's [`Dir.glob`](http://www.ruby-doc.org/core-2.1.1/Dir.html#method-c-glob)
 
-        [
-         { "dir" :
-            {
-              "path" : "/opt/servers/app_server/log",
-              "glob" : "*.log"
-            }
-         }
-        ]
+        "snoopers": {
+            "AppServer": {
+                  "dir" : {
+                      "path" : "/opt/servers/app_server/log",
+                      "glob" : "*.log"
+                    }
+             }
+        }
 
 The above specification will snoop all files in directory `/opt/servers/app_server/log` with a suffix of `.log`
 
@@ -246,6 +247,8 @@ Typically the `Snooper` is used for repeated invocations on a log file. This is 
 
 
 ## Cron example
+
+*/15 * * * * /usr/local/bin/ruby /usr/local/ruby/gems/bin/snoopit -s /opt/admin/snoopit/cron_snoopit.json -f /opt/admin/snoopit/cron_snoopit_db.json -n >> /opt/admin/snoopit/cron_snoopit.out 2>&1
 
 
 ## History

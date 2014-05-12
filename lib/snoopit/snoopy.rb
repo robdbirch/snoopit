@@ -1,9 +1,10 @@
 module Snoopit
   class Snoopy
 
-    attr :input, :output, :dir, :glob, :sniffers
+    attr :name, :input, :output, :dir, :glob, :sniffers
 
-    def initialize(params)
+    def initialize(name, params)
+      @name = name
       @output = params['output']
       setup_input params
       setup_dir params unless params['dir'].nil?
@@ -48,16 +49,9 @@ module Snoopit
       end
     end
 
-    def get_tracked
-      tracked = []
-      @sniffers.each do |sniffer|
-        tracked <<  { snoopy: self } if sniffer.sniffed.size > 0
-      end
-      tracked
-    end
-
     def as_json(options=nil)
       {
+          name: @name,
           input: @input,
           dir: @dir,
           glob: @glob,

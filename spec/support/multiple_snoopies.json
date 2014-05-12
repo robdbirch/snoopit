@@ -1,6 +1,7 @@
 {  "snoopers" :
         {
-            "SnoopTest": {
+            "SnoopTest":
+            {
                 "snoop": "./spec/support/log/snoop_log.test",
                 "dir": {
                     "path": "./spec/support/log",
@@ -33,22 +34,32 @@
                             }
                         ]
 
-                    },
-                    {
-                        "comment": "Data gathered to generate a statistics report",
-                        "regexp": "Total Number of records:",
-                        "lines": {
-                            "before": 1,
-                            "after": 1
-                        },
-                        "notify": [
-                            {
-                                "Test Notifier": null
-                            }
-                        ]
                     }
                 ]
-            }
+            },
+           "SnoopTest2":
+           {
+               "snoop": "./spec/support/log/snoop_log_2.test",
+               "dir": {
+                   "path": "./spec/support/log",
+                   "glob": "*.test"
+               },
+               "sniffers": [
+                   {
+                       "comment": "Bad status from lisp server",
+                       "regexp": "Non OK Status",
+                       "lines": {
+                           "before": 2,
+                           "after": 2
+                       },
+                       "notify": [
+                           {
+                               "Test Notifier": null
+                           }
+                       ]
+                   }
+               ]
+           }
         },
     "notifiers" :
         {

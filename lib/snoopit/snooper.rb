@@ -2,10 +2,13 @@ require 'json'
 module Snoopit
   class Snooper
 
-    attr_accessor :snoopies, :notify_manager, :file_tracker
+    attr_accessor :snoopies, :snoopers, :notify_manager, :file_tracker
 
+    # Snoopies are the list of available named snoopers
+    # Snoopers are the current active invocations of selected snoopies
     def initialize(notifications=true, db_file=nil, logger=nil, log_level=::Logger::INFO)
-      @snoopies = []
+      @snoopies = { }
+      @snoopers = []
       @file_tracker = FileTracker.new db_file unless db_file.nil?
       @notifier = NotificationManager.new if notifications
       Snoopit::Logger.create_logger(logger) unless logger.nil?
@@ -34,8 +37,8 @@ module Snoopit
     # @param json_hash [Hash]
     def load_snoopers(json_hash)
       snoopies_json = json_hash['snoopers']
-      snoopies_json.each do |s|
-        @snoopies << Snoopy.new(s)
+      snoopies_json.each do |name, snooper|
+        @snoopies[name] =  Snoopy.new(name, snooper)
       end
       raise ArgumentError.new 'There are no Snoopies in the JSON Snooper ' if @snoopies.size == 0
     end
@@ -53,16 +56,30 @@ module Snoopit
     end
 
     # Use the snoopies and start snooping
-    def snoop
-      @snoopies.each do |snoopy|
+    def snoop(names=[])
+      snoopers = get_snoopers names
+      snoopers.each do |snoopy|
         if (!snoopy.dir.nil?) && (snoopy.dir?)
           snoop_dir snoopy
         else
           snoop_file snoopy
         end
       end
-      @notifier.notify @snoopies unless @notifier.nil?
-      get_tracked
+      @notifier.notify @snoopers unless @notifier.nil?
+      snoopers
+    end
+
+    def get_snoopers(names=[])
+      @snoopers = []
+      use_names = (names.size == 0 ? false : true)
+      @snoopies.each do |key, snooper|
+        if use_names
+          @snoopers << snooper if names.include? key
+        else
+          @snoopers << snooper
+        end
+      end
+      @snoopers
     end
 
     def snoop_dir(snoopy)
@@ -125,13 +142,6 @@ module Snoopit
       File.foreach file_name do |line|
         snoopy.sniff snoopy.input, line_no, line
         line_no += 1
-      end
-    end
-
-    def get_tracked
-      tracked = []
-      @snoopies.each do |snoopy|
-        tracked << snoopy.get_tracked
       end
     end
 

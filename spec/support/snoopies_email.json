@@ -1,32 +1,32 @@
 {  "snoopers" :
-    [
+            {
+            "SnooperTest": {
+                "snoop": "./spec/support/log/snoop_log.test",
+                "dir": {
+                    "path": "./spec/support/log",
+                    "glob": "*.test"
+                },
+                "sniffers": [
+                    {
+                        "comment": "Failed Bulk load, typically one or more bad records. Need to use manual loader",
+                        "regexp": "Failed to bulk load",
+                        "lines": {
+                            "before": 2,
+                            "after": 2
+                        },
+                        "notify": [
+                            {
+                                "email": {
+                                    "to": [ "admin@noxaos.com", "robert.birch@noxaos.com" ],
+                                    "from": "snooper@noxaos.com"
+                                }
+                            }
+                        ]
 
-        {
-            "snoop" : "./spec/support/log/snoop_log.test",
-            "dir": {
-                "path" : "./spec/support/log",
-                "glob": "*.test"
-            },
-            "sniffers" : [
-                {
-                    "comment" : "Failed Bulk load, typically one or more bad records. Need to use manual loader",
-                    "regexp" : "Failed to bulk load",
-                    "lines" : {
-                        "before" : 2,
-                        "after" : 2
-                    },
-                    "notify" : [
-                        { "email": {
-                            "to": [ "admin@noxaos.com", "robert.birch@noxaos.com" ],
-                            "from" : "snooper@noxaos.com"
-                           }
-                        }
-                    ]
-
-                }
-            ]
-        }
-    ],
+                    }
+                ]
+            }
+        },
     "notifiers" :
         {
             "email" : {
