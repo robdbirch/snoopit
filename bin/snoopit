@@ -23,7 +23,7 @@ OptionParser.new do |opts|
     options[:snoopies_file] = snoopies_file
   end
 
-  opts.on('-S', '--snooper snooper_name', 'Only use the named snoooper. This option can be used more than once to use several snoopers.' ) do |snooper|
+  opts.on('-S', '--snooper snooper_name', 'Only use the named snooper. This option can be used more than once to use several snoopers.' ) do |snooper|
     options[:snoopies] << snooper
   end
 

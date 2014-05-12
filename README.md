@@ -5,7 +5,7 @@
 [![Dependency Status][DS img]][Dependency Status]
 [![Coverage Status][CS img]][Coverage Status]
 
-Simple tool for monitoring process log files for specified events and then generating  a basic notification.
+Simple tool for monitoring process log files for specified events and then generating basic notifications. This is an extendale and data driven solution. It provides a single location to manage log scraping duties.
 
 ## Installation
 
@@ -25,8 +25,8 @@ Or install it yourself as:
 Typical use is via the command line with a JSON specification file.
 
         Usage: snooper [options]
-            -s, --snoopers snoopies.json     File contains one or more regular expressions to locate a line of interest in a file
-            -S, --snooper snooper_name       Only use the named snoooper. This option can be used more than once to use several snoopers.
+            -s, --snoopers snoopers.json     File contains one or more regular expressions to locate a line of interest in a file
+            -S, --snooper snooper_name       Only use the named snooper. This option can be used more than once to use several snoopers.
             -t, --template                   Generate a template snoopies.json file to stdout
             -T, --tracking                   Enable log file tracking using file ./snoopit_db.json
             -f, --tracking-file file_name    Specify a different tracking file name and location instead of the default ./snoopit_db.json
@@ -37,6 +37,33 @@ Typical use is via the command line with a JSON specification file.
             -l, --line-numbers               show line numbers
             -v, --verbose                    prints out file name, matched line number
             -h, --help
+
+### Basic Snoopers specification file
+
+`Snooper.json`
+
+        {
+          "snoopers" : {
+            "AppServer1" : {
+                  "snoop" : "/opt/app_servers/app_server1/log/app.log",
+                  "sniffers" : [
+                    {
+                      "comment" : "Failed to communicate with remote sync server",
+                      "regexp" : "ERROR: Sync",
+                      "lines" : {
+                        "before" : 1,
+                        "after" : 1
+                      }
+                    }
+                  ]
+              }
+           }
+        }
+
+        $ snoopit -s snoopers.json
+         ERROR: Max sync retry count reached
+         ERROR: Sync error on remote server syc_server_54
+         ERROR: Switching to alternate server sync_server_702
 
 ## Snooper Configuration
 This is a JSON file which describes to the `Snooper` how to snoop around files and directories to find items of interest using regular expressions. It contains an array of files to snoop. Each file can be associated one or more regular expressions. Each regular expression behavior can be customized and each regular expression can be associated with zero or more event notifiers. The `Snooper` file also specifies notifier configurations and how to load custom notifiers.
@@ -56,7 +83,7 @@ This is a JSON file which describes to the `Snooper` how to snoop around files a
                                     "notify" : [
                                         {
                                             "email" : {
-                                                "to" : "admin@noxaos.com"
+                                                "to" : "admin@myplace.com"
                                             }
                                         }
                                     ]
@@ -67,10 +94,10 @@ This is a JSON file which describes to the `Snooper` how to snoop around files a
         "notifiers" :
           {
               "load" : {
-                  "Test Notifier Load" : {
-                      "file" : "/Users/rbirch/Development/projects/snoopit/spec/support/test_notifier_load",
-                      "class" : "TestNotifierLoad",
-                      "config" : { }
+                  "MyNotifier" : {
+                      "file" : "/home/joe_code/snoopit/my_notifier",
+                      "class" : "MyNotifier",
+                      "config" : { "config_param" : "config_value" }
                   }
               },
               "email" : {
