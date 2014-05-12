@@ -5,7 +5,7 @@
 [![Dependency Status][DS img]][Dependency Status]
 [![Coverage Status][CS img]][Coverage Status]
 
-Simple tool for monitoring process log files for specified events and then generating basic notifications. This is an extendale and data driven solution. It provides a single location to manage log scraping duties.
+Simple tool for monitoring process log files for specified events and then generating basic notifications. This is an extensible and data driven solution. It provides a single location to manage log scraping duties.
 
 ## Installation
 
