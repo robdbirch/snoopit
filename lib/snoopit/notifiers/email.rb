@@ -44,7 +44,7 @@ module Snoopit
       def build_msg(from, to, msg)
         msg = <<-MSG
 From: #{from}
-To: #{to.join(', ')}
+To: #{to.kind_of(Array) ? to.join(', ') : to }
 Content-Type: text/plain
 Subject: #{msg[:comment]}
 Date: #{DateTime.now.rfc822}
