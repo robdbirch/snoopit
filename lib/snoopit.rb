@@ -11,11 +11,10 @@ require 'snoopit/notification_manager'
 require 'snoopit/notifier'
 require 'snoopit/notifiers/email'
 
-
 module Snoopit
 
   def self.logger
-    Snoopit::Logger.logger
+    Snoopit::Logging.logger
   end
 
 end

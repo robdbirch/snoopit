@@ -45,17 +45,13 @@ module Snoopit
 
     def sniffer_notify(sniffer)
       messages = get_sniffed_messages sniffer
-      sniffer.notifiers.each do |notifier|
-        unless notifier.nil?
-          notifier.keys.each do |key|
-            n = @active[key]
-            next if n.nil?
-            messages.each do |message|
-              n.notify(message, notifier)
-            end
+      sniffer.notifiers.each do |key, value|
+          n = @active[key]
+          next if n.nil?
+          messages.each do |message|
+            n.notify(message, value)
           end
         end
-      end
     end
 
     private

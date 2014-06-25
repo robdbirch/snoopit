@@ -7,7 +7,7 @@ module Snoopit
     attr_accessor :name, :configuration, :klass
 
     # The name is used by the Snooper to identify type of notifier to create
-    # @param name [String] name of notifier if the name is nil the
+    # @param name [String] name of notifier if the name is nil the class name is used
     def initialize(config=nil, name=nil, klass=nil)
       @name = name.nil? ? self.class.name : name
       @klass = klass.nil? ? self.class.name : klass

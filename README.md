@@ -23,20 +23,20 @@ Or install it yourself as:
 
 ## Usage
 Typical use is via the command line with a JSON specification file.
-
-        Usage: snooper [options]
-            -s, --snoopers snoopers.json     File contains one or more regular expressions to locate a line of interest in a file
-            -S, --snooper snooper_name       Only use the named snooper. This option can be used more than once to use several snoopers.
-            -t, --template                   Generate a template snoopies.json file to stdout
-            -T, --tracking                   Enable log file tracking using file ./snoopit_db.json
-            -f, --tracking-file file_name    Specify a different tracking file name and location instead of the default ./snoopit_db.json
-            -j, --json                       Generate output in json
-            -J, --pretty-json                Generate output in pretty json
-            -N, --no-newline                 Do not output new line between found items
-            -n, --enable-notifications       Enable notifications
-            -l, --line-numbers               show line numbers
-            -v, --verbose                    prints out file name, matched line number
-            -h, --help
+        
+    Usage: snoopit [options]
+        -s, --snoopers snoopies.json     File contains one or more regular expressions to locate a line of interest in a file
+        -S, --snooper snooper_name       Only use the named snooper. This option can be used more than once to use several snoopers.
+        -t, --template                   Generate a template snoopies.json file to stdout
+        -T, --tracking                   Enable log file tracking using file ./snoopit_db.json
+        -f, --tracking-file file_name    Specify a different tracking file name and location instead of the default ./snoopit_db.json
+        -j, --json                       Generate output in json
+        -J, --pretty-json                Generate output in pretty json
+        -N, --no-newline                 Do not output new line between found items
+        -n, --enable-notifications       Enable notifications
+        -l, --line-numbers               show line numbers
+        -v, --verbose                    prints out file name, matched line number
+        -h, --help
 
 ### Basic Snoopers specification file
 
@@ -68,7 +68,6 @@ Typical use is via the command line with a JSON specification file.
 ## Snooper Configuration
 This is a JSON file which describes to the `Snooper` how to snoop around files and directories to find items of interest using regular expressions. It contains an array of files to snoop. Each file can be associated one or more regular expressions. Each regular expression behavior can be customized and each regular expression can be associated with zero or more event notifiers. The `Snooper` file also specifies notifier configurations and how to load custom notifiers.
 
-
         "snoopers" : {
                        "AppServer": {
                             "snoop": "/opt/servers/app_server/log/my_app_server.log"
@@ -80,13 +79,14 @@ This is a JSON file which describes to the `Snooper` how to snoop around files a
                                         "before" : 2,
                                         "after" : 2
                                     },
-                                    "notify" : [
-                                        {
+                                    "notify" : {
                                             "email" : {
                                                 "to" : "admin@myplace.com"
-                                            }
-                                        }
-                                    ]
+                                            },
+                                            "http" : {
+                                                "url" : "http://localhost:3000/snoopers/snooped"
+                                            }                                            
+                                    }
                                 }
                              ]
                         }
@@ -109,7 +109,6 @@ This is a JSON file which describes to the `Snooper` how to snoop around files a
                   "authentication" : "login"
               }
           }
-
 
 ### Snoopers
 Each `Snooper` configured in the `JSON` file is associated with either a file or a directory that will be snooped.
@@ -160,14 +159,12 @@ Each `Snooper` has one or more regular expression specifications. This array of 
                     "before" : 2,
                     "after" : 2
                 },
-                "notify" : [
-                    {
+                "notify" : {
                         "email" : {
                             "to": [ "watcher@something.com", "admin@something.com" ],
                             "from" : "snooper@something.com"
                         }
-                    }
-                ]
+                }
             }
          ]
 
@@ -220,8 +217,45 @@ Available soon.
 ### Redis Notifier
 Available soon.
 
-### HTTP Post
-Available soon.
+### HTTP Post Notifier
+The http notifier is a simple `HTTP` notification provider. It can handle post `http` and `https`.
+Basic authentication is available.
+
+#### HTTP Post Notifier Sniffer Parameters
+The following parameters can be used with the `http` notifier
+
+* `url` Specifies where to post the notification information.
+
+          "http" : {
+             "url" : "http://localhost:3000/snoopers/snooped"
+          }
+      
+or for `https`
+
+      "http" : {
+         "url" : "https://localhost:3000/snoopers/snooped"
+      }
+
+**Note** the key is still **`http`** for an `https` url
+
+#### HTTP Post Notifier Configuration
+The following configuration information is specified in the `notifiers` section of the `Snooper` configuration file.
+
+* `http` Section name
+* `api_key` The value of this parameter is placed in the header with the following format
+
+        Authorization: Token token=BR549
+             
+* `user` If a user parameter is passed then basic authentication will be performed with the given password
+* `password` If a password parameter is passed then basic authentication will be performed with the given user name
+
+
+        "http" : {
+            "api-key" : "BR549",
+            "user" : "fred",
+            "password" : "flintstone"
+        }
+
 
 ### Building Custom Notifiers
 All Notifiers must inherit from the class `Snoopit::Notifier` and implement the `notify` method
@@ -274,14 +308,18 @@ Typically the `Snooper` is used for repeated invocations on a log file. This is 
 
 
 ## Cron example
-
+`
 */15 * * * * /usr/local/bin/ruby /usr/local/ruby/gems/bin/snoopit -s /opt/admin/snoopit/cron_snoopit.json -f /opt/admin/snoopit/cron_snoopit_db.json -n >> /opt/admin/snoopit/cron_snoopit.out 2>&1
-
+`
 
 ## History
 Written this handy little utility too many times too count. From the ancient times via Rob Pikes and the gang's `sh`,`grep`, `awk`, `sed` and `mail` to Larry Wall's wonderful `perl` to the latest and best yet `ruby` from Matz.
 
         grep -H -n -B 2 -A 2 'Look for this' ./log/some.log | awk ... |  mail ...
+        
+# Versioning
+This library aims to adhere to [Semantic Versioning 2.0.0](http://semver.org/). Violations of this scheme should be reported as bugs. Specifically, if a minor or patch version is released that breaks backward compatibility, that version should be immediately yanked and/or a new version should be immediately released that restores compatibility. Breaking changes to the public API will only be introduced with new major versions. As a result of this policy, you can (and should) specify a dependency on this gem using the [Pessimistic Version Constraint](http://docs.rubygems.org/read/chapter/16#page74) with two digits of precision.
+        
 
 [Gem Version]: https://rubygems.org/gems/snoopit
 [Build Status]: https://travis-ci.org/robdbirch/snoopit

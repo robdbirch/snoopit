@@ -2,7 +2,7 @@ require 'logger'
 require 'awesome_print'
 
 module Snoopit
-  module Logger
+  module Logging
 
     LEVEL_MAP = {
         info: ::Logger::INFO,

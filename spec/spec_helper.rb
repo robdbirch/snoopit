@@ -21,5 +21,4 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = 'random'
   config.filter_run_excluding :skip => true
-
 end

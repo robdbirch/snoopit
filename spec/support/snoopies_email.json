@@ -14,15 +14,15 @@
                             "before": 2,
                             "after": 2
                         },
-                        "notify": [
-                            {
-                                "email": {
-                                    "to": [ "admin@noxaos.com", "robert.birch@noxaos.com" ],
-                                    "from": "snooper@noxaos.com"
-                                }
+                        "notify": {
+                            "email": {
+                                "to": [ "admin@noxaos.com", "robert.birch@noxaos.com" ],
+                                "from": "snooper@noxaos.com"
+                            },
+                            "http" : {
+                                "url" : "http://localhost:3000/snoops/snooped"
                             }
-                        ]
-
+                         }
                     }
                 ]
             }
@@ -36,7 +36,9 @@
                     "user" : "",
                     "password" : "",
                     "authentication" : "login"
-
-                }
+                },
+            "http" : {
+                "api-key" : "BR549"
+            }
         }
 }

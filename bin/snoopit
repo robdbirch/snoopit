@@ -17,7 +17,7 @@ options[:tracking_file] = './snoopit_db.json'
 
 OptionParser.new do |opts|
 
-  opts.banner = 'Usage: snooper [options]'
+  opts.banner = 'Usage: snoopit [options]'
 
   opts.on('-s', '--snoopers snoopies.json', 'File contains one or more regular expressions to locate a line of interest in a file' ) do |snoopies_file|
     options[:snoopies_file] = snoopies_file

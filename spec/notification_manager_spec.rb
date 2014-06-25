@@ -70,7 +70,6 @@ describe 'Notification Manager' do
       expect(@tn.found.size).to eq 216
     end
 
-
   end
 
   context 'Config load Notifiers' do
@@ -82,9 +81,9 @@ describe 'Notification Manager' do
       @snooper = Snooper.new false
       @notifier_name ='Test Notifier Load'
       jss = @json_hash['snoopers']['SnoopTest']['sniffers']
-      jss[0]['notify'][0] = { @notifier_name => nil }
-      jss[1]['notify'][0] = { @notifier_name => nil }
-      jss[2]['notify'][0] = { @notifier_name => nil }
+      jss[0]['notify'] = { @notifier_name => nil }
+      jss[1]['notify'] = { @notifier_name => nil }
+      jss[2]['notify'] = { @notifier_name => nil }
       @snooper.load_snoopers @json_hash
     end
 

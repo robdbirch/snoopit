@@ -12,6 +12,8 @@ module Snoopit
         super config, 'email'
       end
 
+      # This method is called from the Parent initializer BE SURE to call super
+      # use this as an initializer hook to set instance variables specific to this notifier
       def set_config(config)
         super config
         @smtp_server = @config['smtp-server']
@@ -22,7 +24,7 @@ module Snoopit
       end
 
       def notify(found, notifier_params)
-        send found, notifier_params['email']
+        send found, notifier_params
       end
 
       def send(msg, notifier_params)

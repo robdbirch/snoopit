@@ -14,11 +14,9 @@
                             "before": 2,
                             "after": 2
                         },
-                        "notify": [
-                            {
+                        "notify": {
                                 "Test Notifier": null
-                            }
-                        ]
+                        }
                     },
                     {
                         "comment": "Failed Bulk load, typically one or more bad records. Need to use manual loader",
@@ -27,12 +25,9 @@
                             "before": 2,
                             "after": 2
                         },
-                        "notify": [
-                            {
+                        "notify": {
                                 "Test Notifier": null
-                            }
-                        ]
-
+                        }
                     },
                     {
                         "comment": "Data gathered to generate a statistics report",
@@ -41,11 +36,9 @@
                             "before": 1,
                             "after": 1
                         },
-                        "notify": [
-                            {
+                        "notify": {
                                 "Test Notifier": null
-                            }
-                        ]
+                        }
                     }
                 ]
             }

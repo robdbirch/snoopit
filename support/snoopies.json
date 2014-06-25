@@ -14,14 +14,15 @@
                 "before" : 2,
                 "after" : 2
               },
-              "notify" : [
-                {
+              "notify" : {
                   "email" : {
                     "to" : "somebody@somemail.com",
                     "from" : "snooper@noxaos.com"
+                  },
+                  "http" : {
+                     "url" : "http://localhost:3000/snoopers/snooped"
                   }
                 }
-              ]
             },
             {
               "comment" : "Failed Bulk load failure!",
@@ -30,7 +31,7 @@
                 "before" : 2,
                 "after" : 2
               },
-              "notify" : [
+              "notify" :
                 {
                   "email" : {
                     "to" : [
@@ -40,7 +41,6 @@
                     "from" : "snooper@noxaos.com"
                   }
                 }
-              ]
             }
           ]
     }
@@ -62,6 +62,11 @@
       "user" : "admin@foomail.com",
       "password" : "",
       "authentication" : "login"
+    },
+    "http" : {
+        "api-key" : "BR549",
+        "user" : "fred",
+        "password" : "flintstone"
     }
   }
 }
