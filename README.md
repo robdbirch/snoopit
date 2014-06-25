@@ -230,18 +230,16 @@ The following parameters can be used with the `http` notifier
              "url" : "http://localhost:3000/snoopers/snooped"
           }
       
-or for `https`
+    or for `https`
 
-      "http" : {
-         "url" : "https://localhost:3000/snoopers/snooped"
-      }
-
-**Note** the key is still **`http`** for an `https` url
+          "https" : {
+             "url" : "https://localhost:3000/snoopers/snooped"
+          }
 
 #### HTTP Post Notifier Configuration
 The following configuration information is specified in the `notifiers` section of the `Snooper` configuration file.
 
-* `http` Section name
+* `http` Section name. Use http **not** `https`
 * `api_key` The value of this parameter is placed in the header with the following format
 
         Authorization: Token token=BR549

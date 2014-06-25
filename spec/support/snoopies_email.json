@@ -21,6 +21,9 @@
                             },
                             "http" : {
                                 "url" : "http://localhost:3000/snoops/snooped"
+                            },
+                            "https" : {
+                                "url" : "https://localhost:3000/snoops/snooped"
                             }
                          }
                     }

@@ -10,6 +10,8 @@ require 'snoopit/file_tracker'
 require 'snoopit/notification_manager'
 require 'snoopit/notifier'
 require 'snoopit/notifiers/email'
+require 'snoopit/notifiers/http'
+require 'snoopit/notifiers/https'
 
 module Snoopit
 
