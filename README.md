@@ -212,7 +212,34 @@ The following configuration information is specified in the `notifiers` section 
 * `authentication` Authentication type can be one of the following `plain`,`login`,`cram_md5`
 
 ### Stomp Notifier
-Available soon.
+The stomp notifier is a simple `Stomp` notification provider.
+
+#### Stomp Notifier Sniffer Parameters
+The following parameters can be used with the `stomp` notifier
+
+The destination `queue` and `headers can be specified. 
+
+    "queue" : "/queue/snooped",
+    "headers" : {
+        "key-a": "a",
+        "key-b": "b"
+    }
+
+
+#### Stomp Notifier Configuration
+The following configuration information is specified in the `notifiers` section of the `Snooper` configuration file.
+
+    "stomp": {
+        "host": "localhost",
+        "port": "61613",
+        "login": "admin",
+        "passcode": "flintstone",
+        "headers": {
+            "accept-version": "1.1",
+            "host": "vhost"
+        }
+    }
+
 
 ### Redis Notifier
 Available soon.
