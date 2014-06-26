@@ -19,7 +19,7 @@ module Snoopit
 
     def register(notifier)
       raise NameError.new "Notifier missing valid name: #{notifier.inspect}" if notifier.name.nil?
-      Snoopit.logger.info "Registering notifier #{notifier.name}"
+      Snoopit.logger.debug "Registering notifier #{notifier.name}"
       @active[notifier.name] = notifier
     end
 

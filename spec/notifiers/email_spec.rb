@@ -6,6 +6,9 @@ describe 'Email Notifier'  do
     @file        = File.expand_path('../../support/snoopies_notifiers.json', __FILE__)
     @json        = IO.read(@file)
     @json_hash   = JSON.parse(@json)
+    @json_hash['notifiers'].delete 'http'
+    @json_hash['notifiers'].delete 'https'
+    @json_hash['notifiers'].delete 'stomp'
     @snooper     = Snooper.new false
     @nm          = NotificationManager.new
     @snooper.load_snoopers @json_hash

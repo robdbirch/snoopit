@@ -21,7 +21,6 @@ describe 'File Info' do
 
   it 'initialize with file' do
     fi  = FileInfo.new file
-    ap fi
     expect(fi.size).to be > 0
     expect(fi.line_no).to be == 0
     expect(fi.offset).to be == 0
@@ -54,7 +53,6 @@ describe 'File Info' do
 
     it 'append to log creating increase in log size indicating change' do
       fi = FileInfo.new file_dup
-      puts "FI #{fi.inspect}"
       fh = File.open file_dup, 'a+'
       data.each do |d|
         fh.write d
