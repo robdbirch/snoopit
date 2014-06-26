@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'HTTP Notifier'  do
+describe 'Stomp Notifier'  do
 
   before(:each) do
     @file        = File.expand_path('../../support/snoopies_notifiers.json', __FILE__)
@@ -8,27 +8,27 @@ describe 'HTTP Notifier'  do
     @json_hash   = JSON.parse(@json)
     @snooper     = Snooper.new false
     @nm          = NotificationManager.new
+    @json_hash['notifiers'].delete 'http'
+    @json_hash['notifiers'].delete 'https'
+    @json_hash['notifiers'].delete 'email'
     @snooper.load_snoopers @json_hash
     @nm.load_notifier_config @json_hash['notifiers']
     @nm.unregister_by_name 'email'
   end
 
-  it 'http stub notify' do
-    http = @nm.get_notifier 'http'
-    expect(http.name).to eq 'http'
+  it 'stomp stub notify' do
+    stomp = @nm.get_notifier 'stomp'
+    expect(stomp.name).to eq 'stomp'
     snoopies = @snooper.snoop
-    h = @nm.get_notifier 'http'
+    h = @nm.get_notifier 'stomp'
     n = h.stub(:notify)
     @nm.notify(snoopies)
   end
 
-  it 'http notify', :skip do
-    http = @nm.get_notifier 'http'
-    expect(http.name).to eq 'http'
+  it 'stomp notify', :skip do
+    stomp = @nm.get_notifier 'stomp'
+    expect(stomp.name).to eq 'stomp'
     snoopies = @snooper.snoop
     @nm.notify(snoopies)
   end
-
-
-
 end

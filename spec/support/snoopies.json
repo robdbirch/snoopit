@@ -15,7 +15,10 @@
                             "after": 2
                         },
                         "notify": {
-                                "Test Notifier": null
+                                "Test Notifier": {
+                                    "param1": "value1",
+                                    "param2": "value2"
+                                }
                         }
                     },
                     {
@@ -26,7 +29,10 @@
                             "after": 2
                         },
                         "notify": {
-                                "Test Notifier": null
+                                "Test Notifier": {
+                                    "param1": "value1",
+                                    "param2": "value2"
+                                }
                         }
                     },
                     {
@@ -37,7 +43,10 @@
                             "after": 1
                         },
                         "notify": {
-                                "Test Notifier": null
+                                "Test Notifier Load": {
+                                    "param1": "value1",
+                                    "param2": "value2"
+                                }
                         }
                     }
                 ]
@@ -49,7 +58,10 @@
                 "Test Notifier Load" : {
                     "file" : "./spec/support/test_notifier_load",
                     "class" : "TestNotifierLoad",
-                    "config" : { }
+                    "config" : {
+                        "c_param1" : "value1",
+                        "c_param2" : "value2"
+                    }
                 }
             },
             "email" : {

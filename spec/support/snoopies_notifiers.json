@@ -24,24 +24,43 @@
                             },
                             "https" : {
                                 "url" : "https://localhost:3000/snoops/snooped"
+                            },
+                            "stomp" : {
+                                "queue" : "/queue/snooped",
+                                "headers" : {
+                                    "key-a": "a",
+                                    "key-b": "b"
+                                }
                             }
                          }
                     }
                 ]
             }
         },
-    "notifiers" :
-        {
-            "email" : {
-                    "smtp-server" : "smtp.gmail.com",
-                    "port" : 587,
-                    "tls" : true,
-                    "user" : "",
-                    "password" : "",
-                    "authentication" : "login"
-                },
-            "http" : {
-                "api-key" : "BR549"
+    "notifiers" : {
+        "email": {
+            "smtp-server": "smtp.gmail.com",
+            "port": 587,
+            "tls": true,
+            "user": "",
+            "password": "",
+            "authentication": "login"
+        },
+        "http": {
+            "api-key": "BR549"
+        },
+        "https": {
+            "api-key": "BR549"
+        },
+        "stomp": {
+            "host": "localhost",
+            "port": "61613",
+            "login": "admin",
+            "passcode": "flintstone",
+            "headers": {
+                "accept-version": "1.1",
+                "host": "chatterlens"
             }
         }
+    }
 }

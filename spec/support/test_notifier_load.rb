@@ -2,15 +2,17 @@ require 'snoopit'
 
 class TestNotifierLoad < Snoopit::Notifier
 
-  attr :found
+  attr :found, :config, :params
 
-  def initialize
-    super nil, 'Test Notifier Load'
+  def initialize(config=nil)
+    super config, 'Test Notifier Load'
     @found = []
+    @params = nil
   end
 
   def notify(found, notify_params=nil)
     @found << found
+    @params = notify_params
   end
 
 end

@@ -8,14 +8,11 @@ module Snoopit
 
     # The name is used by the Snooper to identify type of notifier to create
     # @param name [String] name of notifier if the name is nil the class name is used
+    # The empty constructor is used to initialize the class when loaded dynamically
+    # After loaded dynamically the method set_config is called to set the configuration
     def initialize(config=nil, name=nil, klass=nil)
       @name = name.nil? ? self.class.name : name
       @klass = klass.nil? ? self.class.name : klass
-      set_config(config) unless config.nil?
-    end
-
-    # This is a json configuration from the <code>snoopers.json</code> notifiers
-    def set_config(config)
       @config = config
     end
 

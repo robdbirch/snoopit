@@ -8,14 +8,11 @@ module Snoopit
 
     class Http < Snoopit::Notifier
 
+      # The name  'http' is used by the Snooper to identify type of notifier to create
+      # The empty constructor is used to initialize the class when loaded dynamically
+      # After loaded dynamically the method set_config is called by the base class to set the configuration
       def initialize(config=nil)
         super config, 'http'
-      end
-
-      # This method is called from the Parent initializer BE SURE to call super
-      # use this as an initializer hook to set instance variables specific to this notifier
-      def set_config(config)
-        super config
         @api_key = config['api-key']
       end
 

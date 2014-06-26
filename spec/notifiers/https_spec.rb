@@ -4,7 +4,7 @@ require 'awesome_print'
 describe 'HTTPS Notifier'  do
 
   before(:each) do
-    @file        = File.expand_path('../../support/snoopies_email.json', __FILE__)
+    @file        = File.expand_path('../../support/snoopies_notifiers.json', __FILE__)
     @json        = IO.read(@file)
     @json_hash   = JSON.parse(@json)
     @snooper     = Snooper.new false

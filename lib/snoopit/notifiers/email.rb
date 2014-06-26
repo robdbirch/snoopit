@@ -7,15 +7,11 @@ module Snoopit
     class Email < Snoopit::Notifier
 
       attr :smtp_server, :port, :tls
-
+      # The name 'email' is used by the Snooper to identify type of notifier to create
+      # The empty constructor is used to initialize the class when loaded dynamically
+      # After loaded dynamically the method set_config is called by the base class to set the configuration
       def initialize(config=nil)
         super config, 'email'
-      end
-
-      # This method is called from the Parent initializer BE SURE to call super
-      # use this as an initializer hook to set instance variables specific to this notifier
-      def set_config(config)
-        super config
         @smtp_server = @config['smtp-server']
         @port        = @config['port']
         @tls         = @config['tls']

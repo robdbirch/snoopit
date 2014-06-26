@@ -43,10 +43,10 @@ describe 'Notification Manager' do
     before(:each) do
       @nm = NotificationManager.new
       @nm.load_notifier_config @json_hash['notifiers']
-      @tn = TestNotifier.new
-      @nm.register @tn
       @snooper = Snooper.new false
       @snooper.load_file File.expand_path('../support/snoopies.json', __FILE__)
+      @tn = TestNotifier.new
+      @nm.register @tn
     end
 
     it 'unregister notifier' do
@@ -67,7 +67,10 @@ describe 'Notification Manager' do
       #Snoopit.logger.level = ::Logger::DEBUG
       snoopies = @snooper.snoop
       @nm.notify snoopies
-      expect(@tn.found.size).to eq 216
+      expect(@tn.config).to eq nil
+      expect(@tn.params['param1']).to eq 'value1'
+      expect(@tn.params['param2']).to eq 'value2'
+      expect(@tn.found.size).to eq 122
     end
 
   end
@@ -80,10 +83,6 @@ describe 'Notification Manager' do
       @nm.load_notifier_config @json_hash['notifiers']
       @snooper = Snooper.new false
       @notifier_name ='Test Notifier Load'
-      jss = @json_hash['snoopers']['SnoopTest']['sniffers']
-      jss[0]['notify'] = { @notifier_name => nil }
-      jss[1]['notify'] = { @notifier_name => nil }
-      jss[2]['notify'] = { @notifier_name => nil }
       @snooper.load_snoopers @json_hash
     end
 
@@ -92,7 +91,11 @@ describe 'Notification Manager' do
       snoopies = @snooper.snoop
       @nm.notify snoopies
       tnl = @nm.get_notifier @notifier_name
-      expect(tnl.found.size).to eq 216
+      expect(tnl.config['c_param1']).to eq 'value1'
+      expect(tnl.config['c_param2']).to eq 'value2'
+      expect(tnl.params['param1']).to eq 'value1'
+      expect(tnl.params['param2']).to eq 'value2'
+      expect(tnl.found.size).to eq 94
     end
 
   end

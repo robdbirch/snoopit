@@ -277,6 +277,23 @@ All Notifiers must inherit from the class `Snoopit::Notifier` and implement the 
 
 * `notify_params` These are the parameters defined for the notifier in the `Sniffer notifier`  section (e.g. to and from parameters for the email notifier)
 
+        "sniffers" : [
+            {
+                "comment" : "Bad status from server",
+                "regexp" : "Non OK Status",
+                "lines" : {
+                    "before" : 2,
+                    "after" : 2
+                },
+                "notify" : {
+                        "My Custom Notifier" : {
+                            "param1": [ "a_value1", "a_value2" ],
+                            "param2" : "value1"
+                        }
+                }
+            }
+         ]
+
 ### Dynamically Loading Custom Notifiers
 To make a non default notifier available to the `Snooper` a notifier must be dynamically loaded. Specifying a `notifier` to be dynamically loaded is specified in the `notifiers` section of the `Snooper` configuration file.
 
@@ -296,10 +313,35 @@ In the `notifiers Hash` in the `load Hash` add the following in `Custom Notifier
 * `file` The path to the ruby file that contains the custom notifier class `"/opt/snooper/notifiers/my_custom_notifier"`
 * `class` The class name of your notifier `MyCustomNotifier`
 * `config` Any parameters needed to configure the custom notifier prior to generating notifications
-    * Internally the `Snooper` will use a default initializer to create a custom notifier
-        *  `MyCustomNotifier.new`
-    * If there are `config` items then the `set_config` method is called on the the custom notifier to set the notifier's configuration
 
+
+### Custom Notifier Initialization
+Internally the `Snooper` will use an initializer with no arguments to create a custom notifier
+
+    MyCustomNotifier.new specified_config_params
+            
+If there are `config` items specified then the `initializer` will pass those items to the `Custom Notifier#initializer`
+ 
+    def initializer(config)
+      super config
+      @my_param1 = config['param1']
+      @my_param2 = @config['param2'] 
+      ...
+
+**Be sure** to call **`super config`** in your initializer. One of the functions of calling `super` is to place the `config` parameter into the instance variable `@config`
+
+### Specifying Custom Notifier Configuration Section Names
+The key used for your notification parameters for both `configuring` and `notifying` is the class name:
+
+    MyCustomNotifier.class.name
+    
+This can be changed in the `MyCustomNotifier#initializer` by passing a string to `super`
+
+    def initializer(config)
+      super config, 'my_custom_notifier_name'
+      @my_param1 = config['param1']
+      @my_param2 = @config['param2'] 
+      ...
 
 ## File Tracking
 Typically the `Snooper` is used for repeated invocations on a log file. This is typically done via `cron`. Enabling file tracking allows the `Snooper` to keep track of where it was in a file on it's last snoop of the file. Enabling file tracking prevents rereading the whole file and resending matched events. When file tracking is enabled using by the `-T` to `snoopit` the `Snooper` creates a `JSON` database in the directory where the `Snooper` was invoked. This file has the name `snoopit_db.json` The location of this file can be changed using the `-f` option of `snoopit`. If the `-f` option is used the `-T` is implied and does not need to be specified.

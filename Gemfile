@@ -10,5 +10,6 @@ group :test, :development do
 end
 
 gem 'awesome_print', '~> 1.2'
+gem 'stomp', '~> 1.3.2'
 
 

@@ -318,10 +318,10 @@ describe 'Snooper' do
             sniffer.notifiers.size.should eq 1 unless sniffer.notifiers.nil?
             sniffer.notifiers.each do |notifier|
               next if notifier.nil?
-              if sniffer.comment.include? 'Failed Bulk load'
-                expect(notifier).to include 'Test Notifier'
+              if sniffer.comment.include? 'Data gathered to generate a statistics report'
+                expect(notifier).to include 'Test Notifier Load'
               else
-                expect (notifier).should include 'Test Notifier'
+                expect(notifier).to include 'Test Notifier'
               end
             end
           end

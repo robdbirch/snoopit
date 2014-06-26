@@ -68,9 +68,13 @@ module Snoopit
     def create_default_notifiers
       Snoopit::Notifiers.constants.select do  |c|
         if Class === Snoopit::Notifiers.const_get(c)
-          o = Snoopit::Notifiers.const_get(c).new
-          @active[o.name] = o
-          o.set_config @config[o.name] unless @config.nil? || @config[o.name].nil?
+          config = @config[c.to_s.downcase]
+          unless config.nil?
+            o = Snoopit::Notifiers.const_get(c).new config
+            @active[o.name] = o
+          else
+            Snoopit.logger.debug "Notifier #{c.to_s.downcase} not loaded due to no configuration specified"
+          end
         end
       end
     end
@@ -91,8 +95,7 @@ module Snoopit
     end
 
     def create_notifier(klass, notifier_config=nil)
-      o = Object.const_get(klass).new
-      notifier_config.nil? ? o.set_config(@config[o.name]) : o.set_config(notifier_config)
+      o = Object.const_get(klass).new notifier_config
       @active[o.name] = o
     end
 

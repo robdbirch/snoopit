@@ -21,6 +21,12 @@
                   },
                   "http" : {
                      "url" : "http://localhost:3000/snoopers/snooped"
+                  },
+                  "stomp" : {
+                      "queue" : "/queue/snooped",
+                      "headers" : {
+                          "persistent" : true
+                      }
                   }
                 }
             },
@@ -67,6 +73,16 @@
         "api-key" : "BR549",
         "user" : "fred",
         "password" : "flintstone"
+    },
+    "stomp" : {
+        "host" : "localhost",
+        "port" : "61613",
+        "login" : "fred",
+        "passcode" : "flintstone",
+        "headers" : {
+            "accept-version" : "1.1",
+            "host" : "vhost"
+        }
     }
   }
 }
