@@ -14,8 +14,8 @@ describe 'Snoopit' do
   end
 
   def cmd
-    lib = File.expand_path '../../lib', __FILE__
-    'ruby -I ' +  lib + ' ' + File.expand_path('../../bin/snoopit', __FILE__)
+    lib = File.expand_path '../../../lib', __FILE__
+    'ruby -I ' +  lib + ' ' + File.expand_path('../../../bin/snoopit', __FILE__)
   end
 
   context 'command line options' do
@@ -52,7 +52,7 @@ describe 'Snoopit' do
     end
 
     it '--snoopers file.json load specified snoopers file' do
-      file = File.expand_path '../support/snoopies.json', __FILE__
+      file = File.expand_path '../../support/snoopies.json', __FILE__
       output = capture_stdout cmd + ' --snoopers ' + file
       expect(output).to match /Reading from queue: scores\:\/queue\/scores/
       expect(output).to match /Prediction loader waiting for scores \.\.\./
@@ -61,7 +61,7 @@ describe 'Snoopit' do
     end
 
     it '-s file.json load specified snoopers file' do
-      file = File.expand_path '../support/snoopies.json', __FILE__
+      file = File.expand_path '../../support/snoopies.json', __FILE__
       output = capture_stdout cmd + ' -s ' + file
       expect(output).to match /Reading from queue: scores\:\/queue\/scores/
       expect(output).to match /Prediction loader waiting for scores \.\.\./
@@ -72,7 +72,7 @@ describe 'Snoopit' do
     end
 
     it '-S snooper only use the specified snooper from the snoopers file' do
-      file = File.expand_path '../support/snoopies.json', __FILE__
+      file = File.expand_path '../../support/snoopies.json', __FILE__
       output = capture_stdout cmd + ' -s ' + file + ' -S AppServer2'
       expect(output).to match /Reading from queue: scores\:\/queue\/scores/
       expect(output).to match /Prediction loader waiting for scores \.\.\./
@@ -83,7 +83,7 @@ describe 'Snoopit' do
     end
 
     it '--snooper snooper only user the specified snooper from the snoopers file' do
-      file = File.expand_path '../support/snoopies.json', __FILE__
+      file = File.expand_path '../../support/snoopies.json', __FILE__
       output = capture_stdout cmd + ' -s ' + file + ' --snooper AppServer2'
       expect(output).to match /Reading from queue: scores\:\/queue\/scores/
       expect(output).to match /Prediction loader waiting for scores \.\.\./
@@ -95,7 +95,7 @@ describe 'Snoopit' do
 
     # use :skip with coverage
     it '--json generate json output' do
-      file = File.expand_path '../support/snoopies.json', __FILE__
+      file = File.expand_path '../../support/snoopies.json', __FILE__
       output = capture_stdout cmd + ' -s ' + file + ' --snooper AppServer2 --json'
       expect(output).to match /Reading from queue: scores\:\/queue\/scores/
       expect(output).to match /Prediction loader waiting for scores \.\.\./
@@ -116,7 +116,7 @@ describe 'Snoopit' do
 
     # use :skip with coverage
     it '-j generate json output' do
-      file = File.expand_path '../support/snoopies.json', __FILE__
+      file = File.expand_path '../../support/snoopies.json', __FILE__
       output = capture_stdout cmd + ' -s ' + file + ' --snooper AppServer2 -j'
       expect(output).to match /Reading from queue: scores\:\/queue\/scores/
       expect(output).to match /Prediction loader waiting for scores \.\.\./
@@ -137,7 +137,8 @@ describe 'Snoopit' do
 
     # use :skip with coverage
     it '2 snoopers' do
-      file = File.expand_path '../support/snoopies.json', __FILE__
+      file = File.expand_path '../../support/snoopies.json', __FILE__
+      ap file
       output = capture_stdout cmd + ' -s ' + file + ' -S AppServer2  -S SnoopTest -j'
       expect(output).to match /Reading from queue: scores\:\/queue\/scores/
       expect(output).to match /Prediction loader waiting for scores \.\.\./
@@ -167,9 +168,9 @@ describe 'Snoopit' do
     end
 
     it '-T enable file tracking' do
-      db_file = File.expand_path '../../snoopit_db.json', __FILE__
+      db_file = File.expand_path '../../../snoopit_db.json', __FILE__
       File.delete db_file if File.exist? db_file
-      file = File.expand_path '../support/snoopies.json', __FILE__
+      file = File.expand_path '../../support/snoopies.json', __FILE__
       output = capture_stdout cmd + ' -s ' + file + ' --snooper AppServer2 -T'
       expect(output).to match /Reading from queue: scores\:\/queue\/scores/
       expect(output).to match /Prediction loader waiting for scores \.\.\./
@@ -187,9 +188,10 @@ describe 'Snoopit' do
     end
 
     it '--tracking enable file tracking' do
-      db_file = File.expand_path '../../snoopit_db.json', __FILE__
+      db_file = File.expand_path '../../../snoopit_db.json', __FILE__
+      ap db_file
       File.delete db_file if File.exist? db_file
-      file = File.expand_path '../support/snoopies.json', __FILE__
+      file = File.expand_path '../../support/snoopies.json', __FILE__
       output = capture_stdout cmd + ' -s ' + file + ' --snooper AppServer2 --tracking'
       expect(output).to match /Reading from queue: scores\:\/queue\/scores/
       expect(output).to match /Prediction loader waiting for scores \.\.\./
@@ -207,11 +209,11 @@ describe 'Snoopit' do
     end
 
     it '-f filename use a different named tracking file' do
-      tmp_dir = File.expand_path '../../tmp', __FILE__
+      tmp_dir = File.expand_path '../../../tmp', __FILE__
       Dir.mkdir tmp_dir unless Dir.exist?(tmp_dir)
       db_file = File.expand_path '../../tmp/snoopit_db.json', __FILE__
       File.delete db_file if File.exist? db_file
-      file = File.expand_path '../support/snoopies.json', __FILE__
+      file = File.expand_path '../../support/snoopies.json', __FILE__
       output = capture_stdout cmd + ' -s ' + file + ' --snooper AppServer2 -f ' + db_file
       expect(output).to match /Reading from queue: scores\:\/queue\/scores/
       expect(output).to match /Prediction loader waiting for scores \.\.\./
@@ -229,11 +231,11 @@ describe 'Snoopit' do
     end
 
     it '--tracking-file filename use a different named tracking file' do
-      tmp_dir = File.expand_path '../../tmp', __FILE__
+      tmp_dir = File.expand_path '../../../tmp', __FILE__
       Dir.mkdir tmp_dir unless Dir.exist?(tmp_dir)
       db_file = File.expand_path '../../tmp/snoopit_db.json', __FILE__
       File.delete db_file if File.exist? db_file
-      file = File.expand_path '../support/snoopies.json', __FILE__
+      file = File.expand_path '../../support/snoopies.json', __FILE__
       output = capture_stdout cmd + ' -s ' + file + ' --snooper AppServer2 --tracking-file ' + db_file
       expect(output).to match /Reading from queue: scores\:\/queue\/scores/
       expect(output).to match /Prediction loader waiting for scores \.\.\./
