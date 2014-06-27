@@ -14,10 +14,11 @@ describe 'Snoopit' do
   end
 
   def cmd
-    File.expand_path '../../bin/snoopit', __FILE__
+    lib = File.expand_path '../../lib', __FILE__
+    'ruby -I ' +  lib + ' ' + File.expand_path('../../bin/snoopit', __FILE__)
   end
 
-  context 'help' do
+  context 'command line options' do
 
     it '--help' do
       output = capture_stdout cmd + ' --help'
