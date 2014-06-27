@@ -29,7 +29,7 @@ module Snoopit
           updated = new_file? file_handle, c_stat
         elsif (c_stat.size == @size) && (! @mtime.nil?) && (c_stat.mtime > @mtime)
           Snoopit.logger.debug 'FileTracker.updated? file size is same but file time is newer it is a new file: ' + @file
-          updated = new_file? file_handle, stat
+          updated = new_file? file_handle, c_stat
         else
           Snoopit.logger.debug 'FileTracker.updated? reading from last read location: ' + @file
           updated = read_from_last? file_handle, c_stat
