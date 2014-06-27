@@ -39,7 +39,7 @@ describe 'Snoopit' do
     end
 
     # use :skip with coverage
-    it '-t print a snoopers template to standard out', :skip do
+    it '-t print a snoopers template to standard out' do
       output = capture_stdout cmd + ' -t'
       jo = JSON.parse output
       notifiers = jo['notifiers']
@@ -94,7 +94,7 @@ describe 'Snoopit' do
     end
 
     # use :skip with coverage
-    it '--json generate json output', :skip do
+    it '--json generate json output' do
       file = File.expand_path '../support/snoopies.json', __FILE__
       output = capture_stdout cmd + ' -s ' + file + ' --snooper AppServer2 --json'
       expect(output).to match /Reading from queue: scores\:\/queue\/scores/
@@ -136,7 +136,7 @@ describe 'Snoopit' do
     end
 
     # use :skip with coverage
-    it '2 snoopers', :skip do
+    it '2 snoopers' do
       file = File.expand_path '../support/snoopies.json', __FILE__
       output = capture_stdout cmd + ' -s ' + file + ' -S AppServer2  -S SnoopTest -j'
       expect(output).to match /Reading from queue: scores\:\/queue\/scores/
