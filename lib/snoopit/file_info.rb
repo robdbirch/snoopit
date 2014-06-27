@@ -13,20 +13,6 @@ module Snoopit
         @mtime = nil
         @last_line = nil
         @init_stat = true
-        stat unless file.nil?
-      end
-
-      def file=(file)
-        @file = file
-        stat
-      end
-
-      def stat
-        if File.exist? @file
-          s = File.stat @file
-          @size = s.size
-          @mtime = s.mtime
-        end
       end
 
       # Update file Info if the file has changed use the file handle to move the file pointer
@@ -34,14 +20,19 @@ module Snoopit
       #
       # @return [boolean] true if updated false not updated
       def updated?(file_handle)
-        stat = File.stat @file
-        if (stat.size == @size) && (stat.mtime == @mtime) && (! @init_stat)
+        c_stat = File.stat @file
+        if (c_stat.size == @size) && (c_stat.mtime == @mtime) && (! @init_stat)
           Snoopit.logger.debug 'FileTracker.updated? file has not changed: ' + @file
           updated = false
-        elsif (stat.size < @size) || (stat.size == @size)
+        elsif c_stat.size < @size
+          Snoopit.logger.debug 'FileTracker.updated? file size is smaller it is a new new file: ' + @file
+          updated = new_file? file_handle, c_stat
+        elsif (c_stat.size == @size) && (! @mtime.nil?) && (c_stat.mtime > @mtime)
+          Snoopit.logger.debug 'FileTracker.updated? file size is same but file time is newer it is a new file: ' + @file
           updated = new_file? file_handle, stat
         else
-          updated = read_from_last file_handle, stat
+          Snoopit.logger.debug 'FileTracker.updated? reading from last read location: ' + @file
+          updated = read_from_last? file_handle, c_stat
         end
         @init_stat = false
         updated
@@ -49,7 +40,7 @@ module Snoopit
 
       def new_file?(file_handle, stat)
         # seek to 0
-        Snoopit.logger.debug "FileTracker.updated? file new read from start of file: #{@file}"
+        Snoopit.logger.debug 'FileTracker.updated? file new read from start of file: ' + @file
         @offset = 0
         @size = stat.size
         @mtime = stat.mtime
@@ -58,14 +49,14 @@ module Snoopit
         true
       end
 
-      def read_from_last(file_handle, stat)
+      def read_from_last?(file_handle, stat)
         # seek to last position + 1
         old_size = @size
         @size = stat.size
         @mtime = stat.mtime
         Snoopit.logger.debug "File pointer at byte: #{file_handle.tell}"
         file_handle.seek old_size, IO::SEEK_SET
-        Snoopit.logger.debug "Seeked to byte: #{file_handle.tell} destination byte #{old_size} new size #{@size}"
+        Snoopit.logger.debug "Starting read from byte: #{file_handle.tell} destination byte #{old_size} new size #{@size}"
         true
       end
 

@@ -45,6 +45,7 @@ module Snoopit
 
     def load_db(db_file)
       if (! db_file.nil?) && (File.exist? db_file)
+        Snoopit.logger.debug 'Loading from db file: ' + db_file
         hash_db = JSON.parse(IO.read db_file)
         hash_db.each do |key, file_info|
           unless file_info.nil?

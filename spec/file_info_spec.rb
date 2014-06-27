@@ -21,10 +21,10 @@ describe 'File Info' do
 
   it 'initialize with file' do
     fi  = FileInfo.new file
-    expect(fi.size).to be > 0
+    expect(fi.size).to be == 0
     expect(fi.line_no).to be == 0
     expect(fi.offset).to be == 0
-    expect(fi.mtime).not_to be nil
+    expect(fi.mtime).to be nil
   end
 
   it 'initialize with NO file' do
@@ -113,7 +113,9 @@ describe 'File Info' do
       fi.last_line = a_line
       fh.write a_line
       fh.close
-      fi.stat
+      fs = File.stat file_dup
+      fi.size = fs.size
+      fi.mtime = fs.mtime
       sleep 1
       fh = File.open file_dup, 'w+'
       data.each do |d|
