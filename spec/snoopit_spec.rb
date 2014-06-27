@@ -115,7 +115,7 @@ describe 'Snoopit' do
     end
 
     # use :skip with coverage
-    it '-j generate json output', :skip do
+    it '-j generate json output' do
       file = File.expand_path '../support/snoopies.json', __FILE__
       output = capture_stdout cmd + ' -s ' + file + ' --snooper AppServer2 -j'
       expect(output).to match /Reading from queue: scores\:\/queue\/scores/
