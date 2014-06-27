@@ -29,8 +29,9 @@ module Snoopit
           from = notifier_params['from'].nil? ? 'snoopit@snooper.notifier.com' : notifier_params['from']
           formatted = build_msg from, notifier_params['to'], msg
           smtp = Net::SMTP.new @smtp_server, @port
+          helo = @user.split('@')[1] || 'localhost'
           smtp.enable_starttls_auto
-          smtp.start @user.split('@')[1], @user, @password, auth do |smtp|
+          smtp.start helo, @user, @password, auth do |smtp|
             smtp.send_message(formatted, from, notifier_params['to'])
           end
         rescue => e
