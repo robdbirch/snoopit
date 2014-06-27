@@ -4,6 +4,7 @@
 [![Build Status][BS img]][Build Status]
 [![Dependency Status][DS img]][Dependency Status]
 [![Coverage Status][CS img]][Coverage Status]
+[![Code Climate](https://codeclimate.com/github/robdbirch/snoopit.png)](https://codeclimate.com/github/robdbirch/snoopit)
 
 Simple tool for monitoring process log files for specified events and then generating basic notifications. This is an extensible and data driven solution. It provides a single location to manage log scraping duties.
 
@@ -398,6 +399,7 @@ This library aims to adhere to [Semantic Versioning 2.0.0](http://semver.org/). 
 [BS img]: https://travis-ci.org/robdbirch/snoopit.png
 [DS img]: https://gemnasium.com/robdbirch/snoopit.png
 [CS img]: https://coveralls.io/repos/robdbirch/snoopit/badge.png?branch=master
+
 
 
 ## Contributing
