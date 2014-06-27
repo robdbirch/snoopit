@@ -207,6 +207,8 @@ describe 'Snoopit' do
     end
 
     it '-f filename use a different named tracking file' do
+      tmp_dir = File.expand_path '../../tmp', __FILE__
+      Dir.mkdir tmp_dir unless Dir.exist?(tmp_dir)
       db_file = File.expand_path '../../tmp/snoopit_db.json', __FILE__
       File.delete db_file if File.exist? db_file
       file = File.expand_path '../support/snoopies.json', __FILE__
@@ -227,6 +229,8 @@ describe 'Snoopit' do
     end
 
     it '--tracking-file filename use a different named tracking file' do
+      tmp_dir = File.expand_path '../../tmp', __FILE__
+      Dir.mkdir tmp_dir unless Dir.exist?(tmp_dir)
       db_file = File.expand_path '../../tmp/snoopit_db.json', __FILE__
       File.delete db_file if File.exist? db_file
       file = File.expand_path '../support/snoopies.json', __FILE__
