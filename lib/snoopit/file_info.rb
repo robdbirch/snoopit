@@ -13,12 +13,12 @@ module Snoopit
         @mtime = nil
         @last_line = nil
         @init_stat = true
-        stat() unless file.nil?
+        stat unless file.nil?
       end
 
       def file=(file)
         @file = file
-        stat()
+        stat
       end
 
       def stat
@@ -35,31 +35,38 @@ module Snoopit
       # @return [boolean] true if updated false not updated
       def updated?(file_handle)
         stat = File.stat @file
-        if (stat.size == @size) && (stat.mtime == @mtime) && (! init_stat)
-          Snoopit.logger.debug "FileTracker.updated? file hasn't changed: #{@file}"
+        if (stat.size == @size) && (stat.mtime == @mtime) && (! @init_stat)
+          Snoopit.logger.debug 'FileTracker.updated? file has not changed: ' + @file
           updated = false
         elsif (stat.size < @size) || (stat.size == @size)
-          # seek to 0
-          Snoopit.logger.debug "FileTracker.updated? file new read from start of file: #{@file}"
-          @offset = 0
-          @size = stat.size
-          @mtime = stat.mtime
-          @last_line = nil
-          file_handle.seek 0, IO::SEEK_SET
-          updated = true
+          updated = new_file? file_handle, stat
         else
-          Snoopit.logger.debug "FileTracker.updated? file modified read from last end of file: #{@file}"
-          # seek to last position + 1
-          old_size = @size
-          @size = stat.size
-          @mtime = stat.mtime
-          Snoopit.logger.debug "File pointer at byte: #{file_handle.tell}"
-          file_handle.seek old_size, IO::SEEK_SET
-          Snoopit.logger.debug "Seeked to byte: #{file_handle.tell} destination byte #{old_size} new size #{@size}"
-          updated = true
+          updated = read_from_last file_handle, stat
         end
         @init_stat = false
         updated
+      end
+
+      def new_file?(file_handle, stat)
+        # seek to 0
+        Snoopit.logger.debug "FileTracker.updated? file new read from start of file: #{@file}"
+        @offset = 0
+        @size = stat.size
+        @mtime = stat.mtime
+        @last_line = nil
+        file_handle.seek 0, IO::SEEK_SET
+        true
+      end
+
+      def read_from_last(file_handle, stat)
+        # seek to last position + 1
+        old_size = @size
+        @size = stat.size
+        @mtime = stat.mtime
+        Snoopit.logger.debug "File pointer at byte: #{file_handle.tell}"
+        file_handle.seek old_size, IO::SEEK_SET
+        Snoopit.logger.debug "Seeked to byte: #{file_handle.tell} destination byte #{old_size} new size #{@size}"
+        true
       end
 
       def get_last_line(file_handle)

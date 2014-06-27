@@ -71,9 +71,7 @@ module Snoopit
     end
 
     def as_json(*)
-      {
-          files: @files
-      }
+      { files: @files  }
     end
 
     def to_json(*args)
