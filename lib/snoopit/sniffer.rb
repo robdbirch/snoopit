@@ -9,12 +9,13 @@ module Snoopit
       @after   = sniffer_params['lines']['after'].nil? ? 2 : sniffer_params['lines']['after']
       @comment = sniffer_params['comment']
       @regexp  = Regexp.new sniffer_params['regexp']
+      @notifiers = {}
       setup_notifiers sniffer_params
       @sniffed = []
     end
 
     def setup_notifiers(params)
-      @notifiers = params['notify'] unless params['notify'] .nil?
+      @notifiers = params['notify'] unless params['notify'].nil?
     end
 
     def track(file, line_no, line)

@@ -49,11 +49,28 @@
                 }
             }
           ]
-    }
+    },
+   "AppServer2" : {
+       "snoop" : "/Users/snoopers/log/app_server.log",
+       "dir" : {
+           "path" : "/Users/snoopers/log",
+           "glob" : "*.log"
+       },
+       "sniffers" : [
+           {
+               "comment": "Bad status from app server",
+               "regexp": "Non OK Status",
+               "lines": {
+                   "before": 2,
+                   "after": 2
+               }
+           }
+       ]
+   }
 },
   "notifiers" : {
     "load" : {
-      "Notifer Identifier" : {
+      "Notifier Identifier" : {
         "file" : "/path/to/mynotifier",
         "class" : "MyNotifierClassName",
         "config" : {
@@ -73,6 +90,11 @@
         "api-key" : "BR549",
         "user" : "fred",
         "password" : "flintstone"
+    },
+    "https" : {
+      "api-key" : "BR549",
+      "user" : "fred",
+      "password" : "flintstone"
     },
     "stomp" : {
         "host" : "localhost",

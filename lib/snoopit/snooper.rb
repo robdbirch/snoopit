@@ -2,16 +2,15 @@ require 'json'
 module Snoopit
   class Snooper
 
-    attr_accessor :snoopies, :snoopers, :notify_manager, :file_tracker
+    attr_accessor :snoopies, :notifier, :file_tracker
 
     # Snoopies are the list of available named snoopers
     # Snoopers are the current active invocations of selected snoopies
     def initialize(notifications=true, db_file=nil, logger=nil, log_level=::Logger::INFO)
       @snoopies = { }
-      @snoopers = []
       @file_tracker = FileTracker.new db_file unless db_file.nil?
       @notifier = NotificationManager.new if notifications
-      Snoopit::Logger.create_logger(logger) unless logger.nil?
+      Snoopit::Logging.create_logger(logger) unless logger.nil?
       Snoopit.logger.level = log_level
     end
 
@@ -47,11 +46,11 @@ module Snoopit
       @notifier.load_notifier_config json_hash['notifiers'] unless @notifier.nil?
     end
 
-    def register_notifer(notifier)
+    def register_notifier(notifier)
       @notifier.register notifier
     end
 
-    def unregister_notifer(notifier)
+    def unregister_notifier(notifier)
       @notifier.unregister notifier
     end
 
@@ -65,21 +64,21 @@ module Snoopit
           snoop_file snoopy
         end
       end
-      @notifier.notify @snoopers unless @notifier.nil?
+      @notifier.notify snoopers unless @notifier.nil?
       snoopers
     end
 
     def get_snoopers(names=[])
-      @snoopers = []
+      snoopers = []
       use_names = (names.size == 0 ? false : true)
-      @snoopies.each do |key, snooper|
+      snoopies.each do |key, snooper|
         if use_names
-          @snoopers << snooper if names.include? key
+          snoopers << snooper if names.include? key
         else
-          @snoopers << snooper
+          snoopers << snooper
         end
       end
-      @snoopers
+      snoopers
     end
 
     def snoop_dir(snoopy)
@@ -118,12 +117,12 @@ module Snoopit
 
     def snoop_file(snoopy)
       raise ArgumentError.new "Could find file #{snoopy.input}" unless File.exist? snoopy.input
-      Snoopit.logger.debug "Snooping file: #{snoopy.input}"
+      Snoopit.logger.debug "Snooping file: #{snoopy.input} with snoopy: #{snoopy.name}"
       sniff_it snoopy, snoopy.input
     end
 
     def sniff_it(snoopy, file_name)
-      Snoopit.logger.debug "Sniffing file: #{file_name}"
+      Snoopit.logger.debug "Sniffing file: #{file_name} with snoopy: #{snoopy.name}"
       unless @file_tracker.nil?
         file_track_read(snoopy, file_name)
       else

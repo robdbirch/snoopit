@@ -29,7 +29,6 @@ OptionParser.new do |opts|
 
   opts.on('-t', '--template', 'Generate a template snoopies.json file to stdout' ) do
     template = File.expand_path '../../support/snoopies.json', __FILE__
-    puts template
     File.readlines(template).each do |line|
       puts line
     end
@@ -157,11 +156,11 @@ unless File.exist? options[:snoopies_file]
   exit 1
 end
 
-#snooper = Snoopit::Snooper.new options[:notifications], options[:tracking_file], STDOUT, Logger::DEBUG
+#debug_file = File.open(File.expand_path('../../tmp/debug.log', __FILE__), 'w+')
+#snooper = Snoopit::Snooper.new options[:notifications], options[:tracking_file], debug_file, ::Logger::DEBUG
 snooper = Snoopit::Snooper.new options[:notifications], options[:tracking_file]
 snooper.load_file options[:snoopies_file]
 snoopies = snooper.snoop  options[:snoopies]
-
 if options[:json]
   dump_json snoopies, options[:pretty_json]
 else

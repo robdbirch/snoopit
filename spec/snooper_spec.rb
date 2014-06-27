@@ -5,15 +5,17 @@ describe 'Snooper' do
   context 'base functionality'  do
 
     before(:each) do
+      Snoopit.logger.level = ::Logger::DEBUG
       @file    = File.expand_path('../support/snoopies.json', __FILE__)
       @json    = IO.read(@file)
       @jhash   = JSON.parse(@json)
       @jsnoopy = @jhash['snoopers']['SnoopTest']
+      @jsnoopy2 = @jhash['snoopers']['AppServer2']
       @snooper = Snooper.new
     end
 
     def test_snooper(snooper)
-      snooper.snoopies.size.should eq 1
+      snooper.snoopies.size.should eq 2
       snoopy = snooper.snoopies['SnoopTest']
       snoopy.input.should eq @jsnoopy['snoop']
       snoopy.dir.should eq @jsnoopy['dir']['path']
@@ -52,6 +54,7 @@ describe 'Snooper' do
 
       before(:each) do
         @jsnoopy['dir'] = nil
+        @jsnoopy2['dir'] = nil
       end
 
       it 'loads a regexp configuration and with invalid input and dir via hash' do
@@ -60,9 +63,11 @@ describe 'Snooper' do
       end
 
       it 'loads a snoopies json file and sniffs out a log file' do
+        #Snoopit.logger.level = ::Logger::DEBUG
         @snooper.load_snoopers  @jhash
-        @snooper.snoopies.size.should == 1
+        @snooper.snoopies.size.should == 2
         @snooper.snoopies['SnoopTest'].sniffers.size.should == 3
+        @snooper.snoopies['AppServer2'].sniffers.size.should == 1
         snoopies = @snooper.snoop
         snoopies.each do |snoopy|
           snoopy.sniffers.each do |sniffer|
@@ -97,8 +102,12 @@ describe 'Snooper' do
           sniffer['lines']['before'] = 0
           sniffer['lines']['after'] = 0
         end
+        @jsnoopy2['sniffers'].each do |sniffer|
+          sniffer['lines']['before'] = 0
+          sniffer['lines']['after'] = 0
+        end
         @snooper.load_snoopers  @jhash
-        @snooper.snoopies.size.should == 1
+        @snooper.snoopies.size.should == 2
         @snooper.snoopies['SnoopTest'].sniffers.size.should == 3
         snoopies = @snooper.snoop
         snoopies.each do |snoopy|
@@ -135,9 +144,14 @@ describe 'Snooper' do
           sniffer['lines']['before'] = 0
           sniffer['lines']['after'] = 1
         end
+        @jsnoopy2['sniffers'].each do |sniffer|
+          sniffer['lines']['before'] = 0
+          sniffer['lines']['after'] = 1
+        end
         @snooper.load_snoopers  @jhash
-        @snooper.snoopies.size.should == 1
+        @snooper.snoopies.size.should == 2
         @snooper.snoopies['SnoopTest'].sniffers.size.should == 3
+        @snooper.snoopies['AppServer2'].sniffers.size.should == 1
         snoopies = @snooper.snoop
         snoopies.each do |snoopy|
           snoopy.sniffers.each do |sniffer|
@@ -173,8 +187,12 @@ describe 'Snooper' do
           sniffer['lines']['before'] = 1
           sniffer['lines']['after'] = 0
         end
+        @jsnoopy2['sniffers'].each do |sniffer|
+          sniffer['lines']['before'] = 1
+          sniffer['lines']['after'] = 0
+        end
         @snooper.load_snoopers  @jhash
-        @snooper.snoopies.size.should == 1
+        @snooper.snoopies.size.should == 2
         @snooper.snoopies['SnoopTest'].sniffers.size.should == 3
         snoopies = @snooper.snoop
         snoopies.each do |snoopy|
@@ -243,7 +261,7 @@ describe 'Snooper' do
       it 'loads a snoopies json file and sniffs out a directory' do
         @jsnoopy['dir']['glob'] = nil
         @snooper.load_snoopers @jhash
-        @snooper.snoopies.size.should == 1
+        @snooper.snoopies.size.should == 2
         @snooper.snoopies['SnoopTest'].sniffers.size.should == 3
         snoopies = @snooper.snoop
         snoopies.each do |snoopy|
@@ -276,7 +294,7 @@ describe 'Snooper' do
 
       it 'loads a snoopies json file and sniffs out a glob directory' do
         @snooper.load_snoopers @jhash
-        @snooper.snoopies.size.should == 1
+        @snooper.snoopies.size.should == 2
         @snooper.snoopies['SnoopTest'].sniffers.size.should == 3
         snoopies = @snooper.snoop
         snoopies.each do |snoopy|
@@ -315,7 +333,7 @@ describe 'Snooper' do
         snoopies = @snooper.snoop
         snoopies.each do |snoopy|
           snoopy.sniffers.each do |sniffer|
-            sniffer.notifiers.size.should eq 1 unless sniffer.notifiers.nil?
+            sniffer.notifiers.size.should eq 1 unless sniffer.notifiers.size == 0
             sniffer.notifiers.each do |notifier|
               next if notifier.nil?
               if sniffer.comment.include? 'Data gathered to generate a statistics report'

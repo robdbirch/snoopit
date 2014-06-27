@@ -50,6 +50,23 @@
                         }
                     }
                 ]
+            },
+            "AppServer2" : {
+                "snoop": "./spec/support/log/snoop_log.test",
+                "dir": {
+                    "path": "./spec/support/log",
+                    "glob": "*.test"
+                },
+                "sniffers" : [
+                    {
+                        "comment": "Bad status from app server",
+                        "regexp": "Non OK Status",
+                        "lines": {
+                            "before": 2,
+                            "after": 2
+                        }
+                    }
+                ]
             }
         },
     "notifiers" :
