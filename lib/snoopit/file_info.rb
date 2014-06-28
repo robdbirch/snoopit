@@ -21,13 +21,13 @@ module Snoopit
       # @return [boolean] true if updated false not updated
       def updated?(file_handle)
         c_stat = File.stat @file
-        if (c_stat.size == @size) && (c_stat.mtime == @mtime) && (! @init_stat)
+        if (c_stat.size == @size) && (c_stat.mtime.to_i == @mtime.to_i) && (! @init_stat)
           Snoopit.logger.debug 'FileTracker.updated? file has not changed: ' + @file
           updated = false
         elsif c_stat.size < @size
           Snoopit.logger.debug 'FileTracker.updated? file size is smaller it is a new new file: ' + @file
           updated = new_file? file_handle, c_stat
-        elsif (c_stat.size == @size) && (! @mtime.nil?) && (c_stat.mtime > @mtime)
+        elsif (c_stat.size == @size) && (! @mtime.nil?) && (c_stat.mtime.to_i > @mtime.to_i)
           Snoopit.logger.debug 'FileTracker.updated? file size is same but file time is newer it is a new file: ' + @file
           updated = new_file? file_handle, c_stat
         else
