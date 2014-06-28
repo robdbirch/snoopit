@@ -1,8 +1,12 @@
 module Snoopit
+
+  # Does the actual searching for the given regular expression
   class Sniffer
 
     attr :pre_before, :before, :after, :comment, :regexp, :sniffed, :notifiers
 
+    # This creates a +Sniffer+ which was specified in the +snoopers.json+ file in the +sniffers+ section
+    # @param sniffer_params [Hash] this is a hash from the +snoopers.json+ file in the +sniffers+ section for the assciated +Snoopy+
     def initialize(sniffer_params)
       @before  = sniffer_params['lines']['before'].nil? ? 2 : sniffer_params['lines']['before']
       @pre_before = Register.new @before
@@ -14,10 +18,16 @@ module Snoopit
       @sniffed = []
     end
 
+    # Set up the specified notifier parameters
+    # @param params [Hash] this is a hash from the +snoopers.json+ file in the +notify+ section for the  associated +Sniffer+
     def setup_notifiers(params)
       @notifiers = params['notify'] unless params['notify'].nil?
     end
 
+    # This sniffer tracks through a file until it detects a match
+    # @param file [String] file the +sniffer+ is tracking
+    # @param line_no [Integer] line number the +sniffer+ is tracking
+    # @param  line [String] line the +sniffer+ is tracking
     def track(file, line_no, line)
       matched = @regexp.match(line) do |m|
         @sniffed << Detected.new(@comment, @pre_before, @after, line, file, line_no)
@@ -26,6 +36,8 @@ module Snoopit
       tracking line
     end
 
+    # This is tracking the lines after the match
+    # The +Detected+ instance will let us know when we are finished collecting lines
     def tracking(line)
       @sniffed.each do |detected|
         detected.track line unless detected.finished?

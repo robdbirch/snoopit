@@ -1,8 +1,11 @@
 module Snoopit
+
+  # When the sniffer detects a match it saves the contextual information in a +Detected+ instances
   class Detected
 
     attr :comment, :before, :after, :after_count, :regexp, :match, :finished, :file, :line_no
 
+    # These are parameters from the match
     def initialize(comment, pre_before, after, match, file, line_no)
       setup_before pre_before
       @comment     = comment
@@ -14,10 +17,12 @@ module Snoopit
       @finished    = false
     end
 
+    # Get the lines before the found match
     def setup_before(pre_before)
       @before = Register.new pre_before.size, pre_before.register
     end
 
+    # This collects the lines after a match is found
     def track(line)
       return if line == @match
       if @after_count < @after.size

@@ -1,6 +1,8 @@
 require 'time'
 
 module Snoopit
+
+    # Holds and manages the file read information
     class FileInfo
 
       attr_accessor :file, :line_no, :offset, :size, :mtime, :last_line, :init_stat
@@ -18,6 +20,7 @@ module Snoopit
       # Update file Info if the file has changed use the file handle to move the file pointer
       # to the character where reading will start
       #
+      # @param file_handle [File]
       # @return [boolean] true if updated false not updated
       def updated?(file_handle)
         c_stat = File.stat @file
@@ -38,6 +41,7 @@ module Snoopit
         updated
       end
 
+      # This is a new file reset or start reading from the beginning
       def new_file?(file_handle, stat)
         # seek to 0
         Snoopit.logger.debug 'FileTracker.updated? file new read from start of file: ' + @file
@@ -49,6 +53,7 @@ module Snoopit
         true
       end
 
+      # Continue reading from last location, which maybe on new file on initialization
       def read_from_last?(file_handle, stat)
         # seek to last position + 1
         old_size = @size
@@ -60,6 +65,7 @@ module Snoopit
         true
       end
 
+      # Get the last line of the file
       def get_last_line(file_handle)
         line = nil
         unless @last_line.nil?

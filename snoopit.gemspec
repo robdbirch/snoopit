@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Robert Birch']
   spec.email         = ['robdbirch@gmail.com']
   spec.description   = %q{Snoops files for specified information via a simple configuration file}
-  spec.summary       = %q{Using regular expressions snoops files or directories for specific information. Sends events and tracks repeated invocations as not to send repeat events}
+  spec.summary       = %q{Simple tool for monitoring process log files for specified events and then generating basic notifications. This is an extensible and data driven solution. It provides a single location to manage log scraping duties.}
   spec.homepage      = 'https://github.com/robdbirch/snoopit/blob/master/README.md'
   spec.license       = 'MIT'
 

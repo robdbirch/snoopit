@@ -1,4 +1,8 @@
 module Snoopit
+
+  # Used to track file locations of the last requested snoops per +snooper.json+
+  # This is handy for repeated invocations via +cron+ so that the snooper does not send repeated notifications
+  # This is a very simple json file with **NO** concurrency.
   class FileTracker
 
     attr_accessor :files, :db_file
@@ -13,6 +17,7 @@ module Snoopit
       end
     end
 
+    # Used to start reading lines from the last read invocation
     def foreach(file, &block)
       file_info = get_file(file)
       unless file_info.nil?
@@ -21,12 +26,14 @@ module Snoopit
       end
     end
 
+    # Get the last read file information
     def get_file(file)
       return nil unless File.exist? file
       @files[file] = FileInfo.new(file) if @files[file].nil?
       @files[file]
     end
 
+    # Used to start reading lines from the last read invocation
     def read_lines(file_info, block)
       begin
         fh = File.new(file_info.file)
