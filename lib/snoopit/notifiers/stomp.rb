@@ -2,6 +2,7 @@ require 'stomp'
 require 'awesome_print'
 
 module Snoopit
+  # Notifiers belong to this module
   module Notifiers
 
     class Stomp < Snoopit::Notifier

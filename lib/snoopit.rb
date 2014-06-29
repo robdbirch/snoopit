@@ -13,6 +13,7 @@ require 'snoopit/notifiers/email'
 require 'snoopit/notifiers/http'
 require 'snoopit/notifiers/https'
 
+# Snoops files for a matching regular expressions and generates subscribed events
 module Snoopit
 
   def self.logger

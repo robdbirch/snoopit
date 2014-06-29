@@ -2,8 +2,11 @@ require 'logger'
 require 'awesome_print'
 
 module Snoopit
+
+  # Snoopis Logging Wrapper
   module Logging
 
+    # Maps standard logger constants to symbols
     LEVEL_MAP = {
         info: ::Logger::INFO,
         warn: ::Logger::WARN,
