@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Snoopit by robdbirch</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Snoopit</h1>
+      <h2 class="project-tagline">Simple tool for monitoring process log files for specified events  and then generating  a basic notification.</h2>
+      <a href="https://github.com/robdbirch/snoopit" class="btn">View on GitHub</a>
+      <a href="https://github.com/robdbirch/snoopit/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/robdbirch/snoopit/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="snoopit" class="anchor" href="#snoopit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Snoopit</h1>
+
+<p><a href="https://rubygems.org/gems/snoopit"><img src="https://badge.fury.io/rb/snoopit.png" alt="Gem Version"></a>
+<a href="https://travis-ci.org/robdbirch/snoopit"><img src="https://travis-ci.org/robdbirch/snoopit.png" alt="Build Status"></a>
+<a href="https://gemnasium.com/robdbirch/snoopit"><img src="https://gemnasium.com/robdbirch/snoopit.png" alt="Dependency Status"></a>
+<a href="https://coveralls.io/r/robdbirch/snoopit"><img src="https://coveralls.io/repos/robdbirch/snoopit/badge.png?branch=master" alt="Coverage Status"></a>
+<a href="https://codeclimate.com/github/robdbirch/snoopit"><img src="https://codeclimate.com/github/robdbirch/snoopit.png" alt="Code Climate"></a></p>
+
+<p>Simple tool for monitoring process log files for specified events and then generating basic notifications. This is an extensible and data driven solution. It provides a single location to manage log scraping duties.</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Add this line to your application's Gemfile:</p>
+
+<pre><code>gem 'snoopit'
+</code></pre>
+
+<p>And then execute:</p>
+
+<pre><code>$ bundle
+</code></pre>
+
+<p>Or install it yourself as:</p>
+
+<pre><code>$ gem install snoopit
+</code></pre>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Typical use is via the command line with a JSON specification file.</p>
+
+<pre><code>Usage: snoopit [options]
+    -s, --snoopers snoopies.json     File contains one or more regular expressions to locate a line of interest in a file
+    -S, --snooper snooper_name       Only use the named snooper. This option can be used more than once to use several snoopers.
+    -t, --template                   Generate a template snoopies.json file to stdout
+    -T, --tracking                   Enable log file tracking using file ./snoopit_db.json
+    -f, --tracking-file file_name    Specify a different tracking file name and location instead of the default ./snoopit_db.json
+    -j, --json                       Generate output in json
+    -J, --pretty-json                Generate output in pretty json
+    -N, --no-newline                 Do not output new line between found items
+    -n, --enable-notifications       Enable notifications
+    -l, --line-numbers               show line numbers
+    -v, --verbose                    prints out file name, matched line number
+    -h, --help
+</code></pre>
+
+<h3>
+<a id="basic-snoopers-specification-file" class="anchor" href="#basic-snoopers-specification-file" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Basic Snoopers specification file</h3>
+
+<p><code>Snooper.json</code></p>
+
+<pre><code>    {
+      "snoopers" : {
+        "AppServer1" : {
+              "snoop" : "/opt/app_servers/app_server1/log/app.log",
+              "sniffers" : [
+                {
+                  "comment" : "Failed to communicate with remote sync server",
+                  "regexp" : "ERROR: Sync",
+                  "lines" : {
+                    "before" : 1,
+                    "after" : 1
+                  }
+                }
+              ]
+          }
+       }
+    }
+
+    $ snoopit -s snoopers.json
+     ERROR: Max sync retry count reached
+     ERROR: Sync error on remote server syc_server_54
+     ERROR: Switching to alternate server sync_server_702
+</code></pre>
+
+<h2>
+<a id="snooper-configuration" class="anchor" href="#snooper-configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Snooper Configuration</h2>
+
+<p>This is a JSON file which describes to the <code>Snooper</code> how to snoop around files and directories to find items of interest using regular expressions. It contains an array of files to snoop. Each file can be associated one or more regular expressions. Each regular expression behavior can be customized and each regular expression can be associated with zero or more event notifiers. The <code>Snooper</code> file also specifies notifier configurations and how to load custom notifiers.</p>
+
+<pre><code>    "snoopers" : {
+                   "AppServer": {
+                        "snoop": "/opt/servers/app_server/log/my_app_server.log"
+                        "sniffers" : [
+                            {
+                                "comment" : "Bad status from server",
+                                "regexp" : "Non OK Status",
+                                "lines" : {
+                                    "before" : 2,
+                                    "after" : 2
+                                },
+                                "notify" : {
+                                        "email" : {
+                                            "to" : "admin@myplace.com"
+                                        },
+                                        "http" : {
+                                            "url" : "http://localhost:3000/snoopers/snooped"
+                                        }                                            
+                                }
+                            }
+                         ]
+                    }
+    },
+    "notifiers" :
+      {
+          "load" : {
+              "MyNotifier" : {
+                  "file" : "/home/joe_code/snoopit/my_notifier",
+                  "class" : "MyNotifier",
+                  "config" : { "config_param" : "config_value" }
+              }
+          },
+          "email" : {
+              "smtp-server" : "smtp.gmail.com",
+              "port" : 587,
+              "tls" : true,
+              "user" : "someone@gmail.com",
+              "password" : "apassword",
+              "authentication" : "login"
+          }
+      }
+</code></pre>
+
+<h3>
+<a id="snoopers" class="anchor" href="#snoopers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Snoopers</h3>
+
+<p>Each <code>Snooper</code> configured in the <code>JSON</code> file is associated with either a file or a directory that will be snooped.</p>
+
+<h5>
+<a id="file-snoopers" class="anchor" href="#file-snoopers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>File Snoopers</h5>
+
+<p>Each file <code>Snooper</code> can be associated with one file.</p>
+
+<pre><code>    "snoopers": {
+        "AppServer":  {
+            "snoop": "/opt/servers/app_server/log/my_app_server.log"
+        }
+     }
+</code></pre>
+
+<p>The above specification will snoop the file <code>/opt/servers/app_server/log/my_app_server.log</code></p>
+
+<h5>
+<a id="directory-snoopers" class="anchor" href="#directory-snoopers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Directory Snoopers</h5>
+
+<p>Each directory <code>Snooper</code> can be associated with one directory. If the <code>glob</code> is not specified then every file in the directory is snooped. The <code>glob</code> string value is passed to Ruby's <a href="http://www.ruby-doc.org/core-2.1.1/Dir.html#method-c-glob"><code>Dir.glob</code></a></p>
+
+<pre><code>    "snoopers": {
+        "AppServer": {
+              "dir" : {
+                  "path" : "/opt/servers/app_server/log",
+                  "glob" : "*.log"
+                }
+         }
+    }
+</code></pre>
+
+<p>The above specification will snoop all files in directory <code>/opt/servers/app_server/log</code> with a suffix of <code>.log</code></p>
+
+<h4>
+<a id="defining-snooper-regular-expressions" class="anchor" href="#defining-snooper-regular-expressions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Defining Snooper Regular Expressions</h4>
+
+<p>Each <code>Snooper</code> has one or more regular expression specifications. This array of regular expressions are used to sniff through the files. These are identified as <code>Sniffers</code>.</p>
+
+<h5>
+<a id="sniffer-attributes" class="anchor" href="#sniffer-attributes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sniffer Attributes</h5>
+
+<ul>
+<li>
+<code>comment</code>    Typically used by a <code>Notifier</code>, such as in the subject line in an email notifier.</li>
+<li>
+<code>regexp</code>     The value of this string is passed to ruby's <a href="http://www.ruby-doc.org/core-2.1.1/Regexp.html">Regexp</a>
+</li>
+<li>
+<code>lines</code>
+
+<ul>
+<li>
+<code>before</code> Number of lines to print out before the matched line</li>
+<li>
+<code>after</code>  Number of lines to print out after the matched line</li>
+</ul>
+</li>
+<li>
+<p><code>notify</code>     This is a list of event notifiers to use when a line is matched by the <code>regexp</code></p>
+
+<pre><code>"sniffers" : [
+    {
+        "comment" : "Bad status from server",
+        "regexp" : "Non OK Status",
+        "lines" : {
+            "before" : 2,
+            "after" : 2
+        },
+        "notify" : {
+                "email" : {
+                    "to": [ "watcher@something.com", "admin@something.com" ],
+                    "from" : "snooper@something.com"
+                }
+        }
+    }
+ ]
+</code></pre>
+</li>
+</ul>
+
+<h2>
+<a id="notifiers" class="anchor" href="#notifiers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Notifiers</h2>
+
+<p>After a file has been snooped by a <code>Snooper</code> any items matched by a <code>Sniffer's</code> regular expression can be sent to a specified notifier. Notifier's can be used to send  notifications, such as an email, text messages, enqueue into a queueing system, or call a another service to take action based on the matched event.</p>
+
+<h3>
+<a id="using-a-notifier" class="anchor" href="#using-a-notifier" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using a Notifier</h3>
+
+<p>Each <code>Sniffer</code> can use one or more notifiers. Notification parameters are specified for each <code>Sniffer</code> that uses a particular notifier. In the example above the <code>email</code> notifier parameters used are the <code>to</code> and <code>from</code> parameters.</p>
+
+<h3>
+<a id="configuring-a-notifier-for-the-manager" class="anchor" href="#configuring-a-notifier-for-the-manager" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuring a Notifier for the Manager</h3>
+
+<p>Notifiers will most likely need some minimal configuration information. These notifier configurations are specified after the <code>snoopers</code> section of the <code>Snooper</code> configuration file.</p>
+
+<pre><code>   "notifiers" :
+        {
+            "email" : {
+                "smtp-server" : "smtp.gmail.com",
+                "port" : 587,
+                "user" : "someone@gmail.com",
+                "password" : "password",
+                "authentication" : "login"
+            }
+        }
+</code></pre>
+
+<h3>
+<a id="email-notifier" class="anchor" href="#email-notifier" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Email Notifier</h3>
+
+<p>The email notifier is a simple <code>SMTP</code> mail notification provider.</p>
+
+<h4>
+<a id="email-notifier-sniffer-parameters" class="anchor" href="#email-notifier-sniffer-parameters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Email Notifier Sniffer Parameters</h4>
+
+<p>The following parameters can be used with the <code>email</code> notifier</p>
+
+<ul>
+<li>
+<p><code>to</code> Specifies who is to receive the email notification information. This can be a single string or an array</p>
+
+<pre><code>"foo@bar.com" or [ "foo@bar.com", "bar@foo.com" ]
+</code></pre>
+</li>
+</ul>
+
+<h4>
+<a id="email-notifier-configuration" class="anchor" href="#email-notifier-configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Email Notifier Configuration</h4>
+
+<p>The following configuration information is specified in the <code>notifiers</code> section of the <code>Snooper</code> configuration file.</p>
+
+<ul>
+<li>
+<code>email</code> Section name</li>
+<li>
+<code>smtp-server</code> SMTP sever name</li>
+<li>
+<code>port</code> SMTP port</li>
+<li>
+<code>user</code> User name</li>
+<li>
+<code>password</code> Password</li>
+<li>
+<code>authentication</code> Authentication type can be one of the following <code>plain</code>,<code>login</code>,<code>cram_md5</code>
+</li>
+</ul>
+
+<h3>
+<a id="stomp-notifier" class="anchor" href="#stomp-notifier" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Stomp Notifier</h3>
+
+<p>The stomp notifier is a simple <code>Stomp</code> notification provider.</p>
+
+<h4>
+<a id="stomp-notifier-sniffer-parameters" class="anchor" href="#stomp-notifier-sniffer-parameters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Stomp Notifier Sniffer Parameters</h4>
+
+<p>The following parameters can be used with the <code>stomp</code> notifier</p>
+
+<p>The destination <code>queue</code> and `headers can be specified. </p>
+
+<pre><code>"queue" : "/queue/snooped",
+"headers" : {
+    "key-a": "a",
+    "key-b": "b"
+}
+</code></pre>
+
+<h4>
+<a id="stomp-notifier-configuration" class="anchor" href="#stomp-notifier-configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Stomp Notifier Configuration</h4>
+
+<p>The following configuration information is specified in the <code>notifiers</code> section of the <code>Snooper</code> configuration file.</p>
+
+<pre><code>"stomp": {
+    "host": "localhost",
+    "port": "61613",
+    "login": "admin",
+    "passcode": "flintstone",
+    "headers": {
+        "accept-version": "1.1",
+        "host": "vhost"
+    }
+}
+</code></pre>
+
+<h3>
+<a id="redis-notifier" class="anchor" href="#redis-notifier" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Redis Notifier</h3>
+
+<p>Available soon.</p>
+
+<h3>
+<a id="http-post-notifier" class="anchor" href="#http-post-notifier" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HTTP Post Notifier</h3>
+
+<p>The http notifier is a simple <code>HTTP</code> notification provider. It can handle post <code>http</code> and <code>https</code>.
+Basic authentication is available.</p>
+
+<h4>
+<a id="http-post-notifier-sniffer-parameters" class="anchor" href="#http-post-notifier-sniffer-parameters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HTTP Post Notifier Sniffer Parameters</h4>
+
+<p>The following parameters can be used with the <code>http</code> notifier</p>
+
+<ul>
+<li>
+<p><code>url</code> Specifies where to post the notification information.</p>
+
+<pre><code>  "http" : {
+     "url" : "http://localhost:3000/snoopers/snooped"
+  }
+</code></pre>
+
+<p>or for <code>https</code></p>
+
+<pre><code>  "https" : {
+     "url" : "https://localhost:3000/snoopers/snooped"
+  }
+</code></pre>
+</li>
+</ul>
+
+<h4>
+<a id="http-post-notifier-configuration" class="anchor" href="#http-post-notifier-configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HTTP Post Notifier Configuration</h4>
+
+<p>The following configuration information is specified in the <code>notifiers</code> section of the <code>Snooper</code> configuration file.</p>
+
+<ul>
+<li>
+<code>http</code> Section name. Use http <strong>not</strong> <code>https</code>
+</li>
+<li>
+<p><code>api_key</code> The value of this parameter is placed in the header with the following format</p>
+
+<pre><code>Authorization: Token token=BR549
+</code></pre>
+</li>
+<li><p><code>user</code> If a user parameter is passed then basic authentication will be performed with the given password</p></li>
+<li>
+<p><code>password</code> If a password parameter is passed then basic authentication will be performed with the given user name</p>
+
+<pre><code>"http" : {
+    "api-key" : "BR549",
+    "user" : "fred",
+    "password" : "flintstone"
+}
+</code></pre>
+</li>
+</ul>
+
+<h3>
+<a id="building-custom-notifiers" class="anchor" href="#building-custom-notifiers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Building Custom Notifiers</h3>
+
+<p>All Notifiers must inherit from the class <code>Snoopit::Notifier</code> and implement the <code>notify</code> method</p>
+
+<pre><code>  def notify(found, notify_params)
+    raise NotImplementedError.new 'Notifier#notify'
+  end
+</code></pre>
+
+<h4>
+<a id="notify-parameters" class="anchor" href="#notify-parameters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>notify</code> Parameters</h4>
+
+<ul>
+<li>
+<p><code>found</code> is  a <code>hash</code> with the matched regular expression. It's what the <code>Snooper</code> sniffed out from the file.</p>
+
+<pre><code>  {
+      comment: comment,
+      file: file,
+      before: [ lines before match ],
+      match: matched_line,
+      match_line_no: line_no_of_match,
+      after: [ lines after match ]
+  }
+</code></pre>
+</li>
+<li>
+<p><code>notify_params</code> These are the parameters defined for the notifier in the <code>Sniffer notifier</code>  section (e.g. to and from parameters for the email notifier)</p>
+
+<pre><code>"sniffers" : [
+    {
+        "comment" : "Bad status from server",
+        "regexp" : "Non OK Status",
+        "lines" : {
+            "before" : 2,
+            "after" : 2
+        },
+        "notify" : {
+                "My Custom Notifier" : {
+                    "param1": [ "a_value1", "a_value2" ],
+                    "param2" : "value1"
+                }
+        }
+    }
+ ]
+</code></pre>
+</li>
+</ul>
+
+<h3>
+<a id="dynamically-loading-custom-notifiers" class="anchor" href="#dynamically-loading-custom-notifiers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dynamically Loading Custom Notifiers</h3>
+
+<p>To make a non default notifier available to the <code>Snooper</code> a notifier must be dynamically loaded. Specifying a <code>notifier</code> to be dynamically loaded is specified in the <code>notifiers</code> section of the <code>Snooper</code> configuration file.</p>
+
+<pre><code>    "notifiers" {
+                    "load" : {
+                        "My Custom Notifier" : {
+                            "file" : "/opt/snooper/notifiers/my_custom_notifier",
+                            "class" : "MyCustomNotifier",
+                            "config" : { "param1": "configure_me" }
+                        }
+                    }
+                }
+</code></pre>
+
+<p>In the <code>notifiers Hash</code> in the <code>load Hash</code> add the following in <code>Custom Notifier Hash</code></p>
+
+<ul>
+<li>A key with a descriptive unique name  <code>My Custom Notifier</code>
+</li>
+<li>
+<code>file</code> The path to the ruby file that contains the custom notifier class <code>"/opt/snooper/notifiers/my_custom_notifier"</code>
+</li>
+<li>
+<code>class</code> The class name of your notifier <code>MyCustomNotifier</code>
+</li>
+<li>
+<code>config</code> Any parameters needed to configure the custom notifier prior to generating notifications</li>
+</ul>
+
+<h3>
+<a id="custom-notifier-initialization" class="anchor" href="#custom-notifier-initialization" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Custom Notifier Initialization</h3>
+
+<p>Internally the <code>Snooper</code> will use an initializer with no arguments to create a custom notifier</p>
+
+<pre><code>MyCustomNotifier.new specified_config_params
+</code></pre>
+
+<p>If there are <code>config</code> items specified then the <code>initializer</code> will pass those items to the <code>Custom Notifier#initializer</code></p>
+
+<pre><code>def initializer(config)
+  super config
+  @my_param1 = config['param1']
+  @my_param2 = @config['param2'] 
+  ...
+</code></pre>
+
+<p><strong>Be sure</strong> to call <strong><code>super config</code></strong> in your initializer. One of the functions of calling <code>super</code> is to place the <code>config</code> parameter into the instance variable <code>@config</code></p>
+
+<h3>
+<a id="specifying-custom-notifier-configuration-section-names" class="anchor" href="#specifying-custom-notifier-configuration-section-names" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Specifying Custom Notifier Configuration Section Names</h3>
+
+<p>The key used for your notification parameters for both <code>configuring</code> and <code>notifying</code> is the class name:</p>
+
+<pre><code>MyCustomNotifier.class.name
+</code></pre>
+
+<p>This can be changed in the <code>MyCustomNotifier#initializer</code> by passing a string to <code>super</code></p>
+
+<pre><code>def initializer(config)
+  super config, 'my_custom_notifier_name'
+  @my_param1 = config['param1']
+  @my_param2 = @config['param2'] 
+  ...
+</code></pre>
+
+<h2>
+<a id="file-tracking" class="anchor" href="#file-tracking" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>File Tracking</h2>
+
+<p>Typically the <code>Snooper</code> is used for repeated invocations on a log file. This is typically done via <code>cron</code>. Enabling file tracking allows the <code>Snooper</code> to keep track of where it was in a file on it's last snoop of the file. Enabling file tracking prevents rereading the whole file and resending matched events. When file tracking is enabled using by the <code>-T</code> to <code>snoopit</code> the <code>Snooper</code> creates a <code>JSON</code> database in the directory where the <code>Snooper</code> was invoked. This file has the name <code>snoopit_db.json</code> The location of this file can be changed using the <code>-f</code> option of <code>snoopit</code>. If the <code>-f</code> option is used the <code>-T</code> is implied and does not need to be specified.</p>
+
+<h2>
+<a id="cron-example" class="anchor" href="#cron-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Cron example</h2>
+
+<p><code>
+*/15 * * * * /usr/local/bin/ruby /usr/local/ruby/gems/bin/snoopit -s /opt/admin/snoopit/cron_snoopit.json -f /opt/admin/snoopit/cron_snoopit_db.json -n &gt;&gt; /opt/admin/snoopit/cron_snoopit.out 2&gt;&amp;1
+</code></p>
+
+<h2>
+<a id="history" class="anchor" href="#history" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>History</h2>
+
+<p>Written this handy little utility too many times too count. From the ancient times via Rob Pikes and the gang's <code>sh</code>,<code>grep</code>, <code>awk</code>, <code>sed</code> and <code>mail</code> to Larry Wall's wonderful <code>perl</code> to the latest and best yet <code>ruby</code> from Matz.</p>
+
+<pre><code>    grep -H -n -B 2 -A 2 'Look for this' ./log/some.log | awk ... |  mail ...
+</code></pre>
+
+<h1>
+<a id="versioning" class="anchor" href="#versioning" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Versioning</h1>
+
+<p>This library aims to adhere to <a href="http://semver.org/">Semantic Versioning 2.0.0</a>. Violations of this scheme should be reported as bugs. Specifically, if a minor or patch version is released that breaks backward compatibility, that version should be immediately yanked and/or a new version should be immediately released that restores compatibility. Breaking changes to the public API will only be introduced with new major versions. As a result of this policy, you can (and should) specify a dependency on this gem using the <a href="http://docs.rubygems.org/read/chapter/16#page74">Pessimistic Version Constraint</a> with two digits of precision.</p>
+
+<h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing</h2>
+
+<ol>
+<li>Fork it</li>
+<li>Create your feature branch (<code>git checkout -b my-new-feature</code>)</li>
+<li>Commit your changes (<code>git commit -am 'Add some feature'</code>)</li>
+<li>Push to the branch (<code>git push origin my-new-feature</code>)</li>
+<li>Create new Pull Request</li>
+</ol>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/robdbirch/snoopit">Snoopit</a> is maintained by <a href="https://github.com/robdbirch">robdbirch</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
