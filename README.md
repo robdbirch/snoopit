@@ -6,7 +6,7 @@
 [![Coverage Status][CS img]][Coverage Status]
 [![Code Climate](https://codeclimate.com/github/robdbirch/snoopit.png)](https://codeclimate.com/github/robdbirch/snoopit)
 
-Simple tool for monitoring process log files for specified events and then generating basic notifications. This is an extensible and data driven solution. It provides a single location to manage log scraping duties. Something light and simple for small for very simple projects, personal projects or somehting like temporary proto-types without all the power and complexity of a complete ELK type solution.
+Simple tool for monitoring process log files for specified events and then generating basic notifications. This is an extensible and data driven solution. It provides a single location to manage log scraping duties. Something light and simple for small projects, personal projects or somehting like proto-types without all the power and complexity of a complete ELK type solution.
 
 ## Installation
 
